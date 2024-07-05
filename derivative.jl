@@ -73,6 +73,88 @@ function d(f::Function, x::Real; h::Float64=1e-4, max_prec::Bool=true)::Real
   return __d(f, x, h)
 end
 
+"""
+df/dx
+"""
+function d(degree::Integer, f::Function, x::Real; options)::Real
+  opts = (max_prec=true, accuracy=8, extrapolation=false, h=0.1, depth=4)
+  if degree == 1
+  elseif degree == 2
+  elseif degree == 3
+  elseif degree == 4
+  elseif degree == 5
+  elseif degree == 6
+  end
+end
+
+function __d_₂(f::Function, x::Real, h::Float64)::Real
+  return (-(1 / 2)f(x - h) + (1 / 2)f(x + h)) / h
+end
+
+function __d_₄(f::Function, x::Real, h::Float64)::Real
+  return ((1 / 12)f(x - 2h) - (2 / 3)f(x - h) + (2 / 3)f(x + h) - (1 / 12)f(x + 2h)) / h
+end
+
+function __d_₆(f::Function, x::Real, h::Float64)::Real
+  return (-(1 / 60)f(x - 3h) + (3 / 20)f(x - 2h) - (3 / 4)f(x - h) + (3 / 4)f(x + h) - (3 / 20)f(x + 2h) + (1 / 60)f(x + 3h)) / h
+end
+
+function __d_₈(f::Function, x::Real, h::Float64)::Real
+  return ((1 / 280)f(x - 4h) - (4 / 105)f(x - 3h) + (1 / 5)f(x - 2h) - (4 / 5)f(x - h) + (4 / 5)f(x + h) - (1 / 5)f(x + 2h) + (4 / 105)f(x + 3h) - (1 / 280)f(x + 4h)) / h
+end
+
+function __d²_₂(f::Function, x::Real, h::Float64)::Real
+  return (f(x - h) - 2f(x) + f(x + h)) / h^2
+end
+
+function __d²_₄(f::Function, x::Real, h::Float64)::Real
+  return (-(1 / 12)f(x - 2h) + (4 / 3)f(x - h) - (5 / 2)f(x) + (4 / 3)f(x + h) - (1 / 12)f(x + 2h)) / h^2
+end
+
+function __d²_₆(f::Function, x::Real, h::Float64)::Real
+  return ((1 / 90)f(x - 3h) - (3 / 20)f(x - 2h) + (3 / 2)f(x - h) - (49 / 18)f(x) + (3 / 2)f(x + h) - (3 / 20)f(x + 2h) + (1 / 90)f(x + 3h)) / h^2
+end
+
+function __d²_₈(f::Function, x::Real, h::Float64)::Real
+  return (-(1 / 560)f(x - 4h) + (8 / 315)f(x - 3h) - (1 / 5)f(x - 2h) + (8 / 5)f(x - h) - (205 / 72)f(x) + (8 / 5)f(x + h) - (1 / 5)f(x + 2h) + (8 / 315)f(x + 3h) - (1 / 560)f(x + 4h)) / h^2
+end
+
+function __d³_₂(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d³_₄(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d³_₆(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁴_₂(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁴_₄(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁴_₆(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁵_₂(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁵_₄(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁵_₆(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁶_₂(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁶_₄(f::Function, x::Real, h::Float64)::Real
+end
+
+function __d⁶_₆(f::Function, x::Real, h::Float64)::Real
+end
+
 function __d(f::Function, x::Real, h::Float64)::Real
   return (-f(x + 2h) + 8f(x + h) - 8f(x - h) + f(x - 2h)) / 12h
 end
@@ -95,7 +177,7 @@ function __d_max_prec(f::Function, x::Real)::Real
       break
     end
   end
-  return f_old
+  return f_mid
 end
 
 function d²(f::Function, x::Real; h::Float64=1e-4, max_prec::Bool=true)::Real
@@ -211,34 +293,35 @@ function __Dⱼₖ(f::Function, x::Real, h::Float64, i::Integer, k::Integer)::Re
 end
 
 function __d_h²_max_prec(f::Function, x::Real)::Real
-
+  # Todo: this does not yield the highest precision
   function d_h²(f::Function, x::Real, depth::Integer)::Real
     h = 1e-1
     f_old = 0
     f_mid = 0
-    f_new = __d_h²(f, x, h)
+    f_new = __d_h²(f, x, h, depth)
     δ_old = 0
     δ_new = Inf64
     while true
       h /= 5
       f_old = f_mid
       f_mid = f_new
-      f_new = __d_h²(f, x, h)
+      f_new = __d_h²(f, x, h, depth)
       δ_old = δ_new
       δ_new = abs(f_mid - f_new)
       if δ_new >= δ_old
         break
       end
     end
-    return f_old
+    return f_mid
   end
 
+  # Todo: depth needs to be calculated differently
   f_old = 0
   f_mid = 0
   f_new = d_h²(f, x, 1)
   δ_old = 0
   δ_new = Inf64
-  for depth in 2:7
+  for depth in 1:7
     f_old = f_mid
     f_mid = f_new
     f_new = d_h²(f, x, depth)
@@ -248,7 +331,7 @@ function __d_h²_max_prec(f::Function, x::Real)::Real
       break
     end
   end
-  return f_old
+  return f_mid
 end
 
 function __d²_h²(f::Function, x::Real, h::Float64=0.1, depth::Integer=4)::Real
