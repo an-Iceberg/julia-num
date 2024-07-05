@@ -2,14 +2,15 @@ using Printf
 include("derivative.jl")
 include("integral.jl")
 
-x::Float64 = 2
+x::Float64 = -2
 f(x) = ℯ^-(x - 2)^2 * sin(10x)
 f⁽¹⁾(x) = -ℯ^-(x - 2)^2 * ((2x - 4)sin(10x) - 10cos(10x))
 
 @printf "\033[4mapproximation errors\033[0m\n"
-@printf "  5 point          = %.2e\n" abs(f⁽¹⁾(x) - d(f, x, max_prec=false))
-@printf "  h²               = %.2e\n" abs(f⁽¹⁾(x) - __d_h²(f, x))
-@printf "  5 point max prec = %.2e\n" abs(f⁽¹⁾(x) - d(f, x))
+@printf "  d point h=1e-4   = %.2e\n" abs(f⁽¹⁾(x) - d(f, x; max_prec=false))
+@printf "  d point max prec = %.2e\n" abs(f⁽¹⁾(x) - d(f, x))
+@printf "  d h²             = %.2e\n" abs(f⁽¹⁾(x) - __d_h²(f, x))
+@printf "  d h² max prec    = %.2e\n" abs(f⁽¹⁾(x) - __d_h²_max_prec(f, x))
 
 # Todo: performance testing
 
@@ -46,8 +47,33 @@ println([round(x, digits=4) for x in ∇³(f⃗, x⃗)])
 println([round(x, digits=4) for x in ∇⁴(f⃗, x⃗)])
 
 println()
-@printf "%.2e\n" abs(d(f, x) - __d_midpoint(f, x))
-@printf "%.2e\n" abs(d³(f, x) - __d³_midpoint(f, x))
-@printf "%.2e\n" abs(d³(f, x) - __d³_h²(f, x))
-@printf "%.2e\n" abs(d⁴(f, x) - __d⁴_midpoint(f, x))
-@printf "%.2e\n" abs(d⁴(f, x) - __d⁴_h²(f, x))
+@printf "d midpoint    = %.2e\n" abs(d(f, x) - __d_midpoint(f, x))
+@printf "d h² max prec = %.2e\n" abs(d(f, x) - __d_h²_max_prec(f, x))
+# println("  --- depth = 2 ---")
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-1, 2))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-2, 2))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-3, 2))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-4, 2))
+# println("  --- depth = 3 ---")
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-1, 3))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-2, 3))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-3, 3))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-4, 3))
+# println("  --- depth = 4 ---")
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-1, 4))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-2, 4))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-3, 4))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-4, 4))
+# println("  --- depth = 5 ---")
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-1, 5))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-2, 5))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-3, 5))
+# @printf "%.2e\n" abs(d(f, x) - __d_h²(f, x, 1e-4, 5))
+
+@printf "d³ midpoint    = %.2e\n" abs(d³(f, x) - __d³_midpoint(f, x))
+@printf "d³ h²          = %.2e\n" abs(d³(f, x) - __d³_h²(f, x))
+@printf "d³ h² max prec = %.2e\n" abs(d³(f, x) - __d³_h²_max_prec(f, x))
+@printf "d⁴ midpoint    = %.2e\n" abs(d⁴(f, x) - __d⁴_midpoint(f, x))
+@printf "d⁴ h²          = %.2e\n" abs(d⁴(f, x) - __d⁴_h²(f, x))
+@printf "d⁴ h² max prec = %.2e\n" abs(d⁴(f, x) - __d⁴_h²_max_prec(f, x))
+
