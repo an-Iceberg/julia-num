@@ -76,7 +76,7 @@ end
 """
 df/dx
 """
-function d(degree::Integer, f::Function, x::Real; options)::Real
+function d(degree::Integer, f::Function, x::Real, options=())::Real
   opts = (max_prec=true, accuracy=8, extrapolation=false, h=0.1, depth=4)
   if degree == 1
   elseif degree == 2
@@ -87,20 +87,17 @@ function d(degree::Integer, f::Function, x::Real; options)::Real
   end
 end
 
-function __d_₂(f::Function, x::Real, h::Float64)::Real
-  return (-(1 / 2)f(x - h) + (1 / 2)f(x + h)) / h
-end
-
-function __d_₄(f::Function, x::Real, h::Float64)::Real
-  return ((1 / 12)f(x - 2h) - (2 / 3)f(x - h) + (2 / 3)f(x + h) - (1 / 12)f(x + 2h)) / h
-end
-
-function __d_₆(f::Function, x::Real, h::Float64)::Real
-  return (-(1 / 60)f(x - 3h) + (3 / 20)f(x - 2h) - (3 / 4)f(x - h) + (3 / 4)f(x + h) - (3 / 20)f(x + 2h) + (1 / 60)f(x + 3h)) / h
-end
-
-function __d_₈(f::Function, x::Real, h::Float64)::Real
-  return ((1 / 280)f(x - 4h) - (4 / 105)f(x - 3h) + (1 / 5)f(x - 2h) - (4 / 5)f(x - h) + (4 / 5)f(x + h) - (1 / 5)f(x + 2h) + (4 / 105)f(x + 3h) - (1 / 280)f(x + 4h)) / h
+function __d(f::Function, x::Real, h::Float64, accuracy::Integer)::Real
+  if accuracy == 2
+    return (-(1 / 2)f(x - h) + (1 / 2)f(x + h)) / h
+  elseif accuracy == 4
+    return ((1 / 12)f(x - 2h) - (2 / 3)f(x - h) + (2 / 3)f(x + h) - (1 / 12)f(x + 2h)) / h
+  elseif accuracy == 6
+    return (-(1 / 60)f(x - 3h) + (3 / 20)f(x - 2h) - (3 / 4)f(x - h) + (3 / 4)f(x + h) - (3 / 20)f(x + 2h) + (1 / 60)f(x + 3h)) / h
+  elseif accuracy == 8
+    return ((1 / 280)f(x - 4h) - (4 / 105)f(x - 3h) + (1 / 5)f(x - 2h) - (4 / 5)f(x - h) + (4 / 5)f(x + h) - (1 / 5)f(x + 2h) + (4 / 105)f(x + 3h) - (1 / 280)f(x + 4h)) / h
+  end
+  throw("\"accuracy\" must be either 2, 4, 6 or 8")
 end
 
 function __d²_₂(f::Function, x::Real, h::Float64)::Real
