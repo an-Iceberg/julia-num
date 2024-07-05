@@ -1,0 +1,35 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "f5anything",
+      "request": "launch",
+      "name": "Run main",
+      "command": "julia main.jl",
+      "terminalName": "Julia",
+      "showTerminal": true,
+      "terminalIndex": 1
+    },
+    {
+      "type": "f5anything",
+      "request": "launch",
+      "name": "Run active file",
+      "command": "julia \"${file}\"",
+      "terminalName": "Julia",
+      "showTerminal": true,
+      "terminalIndex": 1
+    },
+    {
+      "type": "julia",
+      "request": "launch",
+      "name": "Debug active file",
+      "program": "${file}",
+      "stopOnEntry": false,
+      "cwd": "${workspaceFolder}",
+      "juliaEnv": "${command:activeJuliaEnvironment}"
+    },
+  ]
+}
