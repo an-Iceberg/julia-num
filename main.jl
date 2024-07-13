@@ -1,6 +1,6 @@
 using Printf
-include("derivative.jl")
 include("integral.jl")
+include("derivative.jl")
 
 x::Float64 = -2
 f(x) = ℯ^-(x - 2)^2 * sin(10x)
@@ -9,46 +9,47 @@ f⁽¹⁾(x) = -ℯ^-(x - 2)^2 * ((2x - 4)sin(10x) - 10cos(10x))
 @printf "\033[4munderline\033[0m\n"
 
 @printf "e^-(x-2)²⋅sin(10x)\n"
-@printf "  d h=1e-4      = %.2e\n" abs(f⁽¹⁾(x) - d(f, x; max_prec=false))
-@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾(x) - d(f, x))
-@printf "  d h²          = %.2e\n" abs(f⁽¹⁾(x) - __d_h²(f, x))
-@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾(x) - __d_h²_max_prec(f, x))
+@printf "  d             = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false))
+@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x))
+@printf "  d h²          = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; ext=true, max_prec=false))
+@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; ext=true))
 println()
 
 f₁(x) = x^2 - 2x + 1
 f⁽¹⁾₁(x) = 2x - 2
 @printf "x² - 2x + 1\n"
-@printf "  d h=1e-4      = %.2e\n" abs(f⁽¹⁾₁(x) - d(f₁, x; max_prec=false))
-@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾₁(x) - d(f₁, x))
-@printf "  d h²          = %.2e\n" abs(f⁽¹⁾₁(x) - __d_h²(f₁, x))
-@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾₁(x) - __d_h²_max_prec(f₁, x))
+@printf "  d             = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false))
+@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x))
+@printf "  d h²          = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; ext=true, max_prec=false))
+@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; ext=true))
 println()
 
 f₂(x) = 1 / x
 f⁽¹⁾₂(x) = -1 / x^2
 @printf "1/x\n"
-@printf "  d h=1e-4      = %.2e\n" abs(f⁽¹⁾₂(x) - d(f₂, x; max_prec=false))
-@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾₂(x) - d(f₂, x))
-@printf "  d h²          = %.2e\n" abs(f⁽¹⁾₂(x) - __d_h²(f₂, x))
-@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾₂(x) - __d_h²_max_prec(f₂, x))
+@printf "  d             = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false))
+@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x))
+@printf "  d h²          = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; ext=true, max_prec=false))
+@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; ext=true))
 println()
 
 f₃(x) = log(abs(x))
 f⁽¹⁾₃(x) = 1 / x
 @printf "log(|x|)\n"
-@printf "  d h=1e-4      = %.2e\n" abs(f⁽¹⁾₃(x) - d(f₃, x; max_prec=false))
-@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾₃(x) - d(f₃, x))
-@printf "  d h²          = %.2e\n" abs(f⁽¹⁾₃(x) - __d_h²(f₃, x))
-@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾₃(x) - __d_h²_max_prec(f₃, x))
+@printf "  d             = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false))
+@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x))
+@printf "  d h²          = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; ext=true, max_prec=false))
+@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; ext=true))
 println()
 
 f₄(x) = sin(x)
 f⁽¹⁾₄(x) = cos(x)
 @printf "sin(x)\n"
-@printf "  d h=1e-4      = %.2e\n" abs(f⁽¹⁾₄(x) - d(f₄, x; max_prec=false))
-@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾₄(x) - d(f₄, x))
-@printf "  d h²          = %.2e\n" abs(f⁽¹⁾₄(x) - __d_h²(f₄, x))
-@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾₄(x) - __d_h²_max_prec(f₄, x))
+@printf "  d             = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false))
+@printf "  d max prec    = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x))
+@printf "  d h²          = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; ext=true, max_prec=false))
+@printf "  d h² max prec = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; ext=true))
+
 exit()
 # Todo: performance testing
 
