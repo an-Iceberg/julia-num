@@ -1,3 +1,4 @@
+# Todo: restructure this
 function ∫(f::Function, a::Real, b::Real, options::Tuple{String,Bool,Float64,Integer}=("simpson", true, 1e-4, 4))::Real
   (method, max_prec, h, depth) = options
   if method == "simpson"
@@ -20,17 +21,6 @@ end
 # %%%%%%%%%%%%%%%%%%%% Simpson's ⅓ rule %%%%%%%%%%%%%%%%%%%%
 
 function __∫_max_prec(f::Function, a::Real, b::Real)::Real
-  h = 1e-1
-  f_old = __∫(f, a, b, h)
-  h /= 10
-  f_new = __∫(f, a, b, h)
-  while true
-    h /= 10
-    f_old = f_new
-    f_new = __∫(f, a, b, h)
-    f_old - f_new < 0 || break
-  end
-  return f_old
 end
 
 function __∫(f::Function, a::Real, b::Real, h::Float64)::Real
