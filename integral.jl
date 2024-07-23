@@ -1,20 +1,15 @@
 # Todo: restructure this
-function ∫(f::Function, a::Real, b::Real, options::Tuple{String,Bool,Float64,Integer}=("simpson", true, 1e-4, 4))::Real
-  (method, max_prec, h, depth) = options
-  if method == "simpson"
+function ∫(f::Function, a::Real, b::Real; max_prec::Bool=true, ext::Bool=false, h::Float64=0.1, depth::Integer=4)::Real
+  if ext
     if max_prec
-      return __∫_max_prec(f, a, b)
-    else
-      return __∫(f, a, b, h)
-    end
-  elseif method == "romberg"
-    if max_prec
-      __∫_romberg_max_prec(f, a, b)
     else
       return __∫_romberg(f, a, b, h, depth)
     end
   else
-    throw("Method must be either \"simpson\" or \"romberg\".")
+    if max_prec
+    else
+      return __∫(f, a, b, h)
+    end
   end
 end
 

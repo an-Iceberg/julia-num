@@ -101,24 +101,27 @@ function __d(degree::Integer, f::Function, x::Real, h::Float64, acc::Integer)::R
 end
 
 function __d_max_prec(degree::Integer, f::Function, x::Real, acc::Integer)::Real
-  f_old = __d(degree, f, x, 1.0, acc)
-  f_mid = __d(degree, f, x, 0.1, acc)
+  # ToDo: why does this not work?!?!?!
+  f_1 = __d(degree, f, x, 1.0, acc)
+  f_old = __d(degree, f, x, 0.1, acc)
   f_new = __d(degree, f, x, 0.01, acc)
-  δ_old = abs(f_old - f_mid)
-  δ_new = abs(f_new - f_mid)
+  δ_old = abs(f_1 - f_old)
+  δ_new = abs(f_1 - f_new)
+  δ_δ = δ_new - δ_old
+  # In case f_1 is the most precise
+  # if δ_δ > 0
+  #   return f_1
+  # end
   h = 0.01
-  while true
+  while δ_δ <= 0
     h /= 10
-    f_old = f_mid
-    f_mid = f_new
+    f_old = f_new
     f_new = __d(degree, f, x, h, acc)
     δ_old = δ_new
-    δ_new = abs(f_mid - f_new)
-    if δ_new >= δ_old
-      break
-    end
+    δ_new = abs(f_1 - f_new)
+    δ_δ = δ_new - δ_old
   end
-  return f_mid
+  return f_old
 end
 
 function __d_h²(degree::Integer, f::Function, x::Real, acc::Integer, h::Float64=0.1, depth::Integer=4)::Real
@@ -140,12 +143,12 @@ end
 function __d_h²_max_prec(degree::Integer, f::Function, x::Real)::Real
 
   function d_h²(degree::Integer, f::Function, x::Real, depth::Integer)::Real
-    f_old = __d_h²(degree, f, x, 2, 0.1, depth)
-    f_mid = __d_h²(degree, f, x, 2, 0.01, depth)
-    f_new = __d_h²(degree, f, x, 2, 0.001, depth)
+    f_old = __d_h²(degree, f, x, 2, 1.0, depth)
+    f_mid = __d_h²(degree, f, x, 2, 0.1, depth)
+    f_new = __d_h²(degree, f, x, 2, 0.01, depth)
     δ_old = abs(f_old - f_mid)
     δ_new = abs(f_new - f_mid)
-    h = 0.001
+    h = 0.01
     while true
       h /= 10
       f_old = f_mid
@@ -377,6 +380,8 @@ function ∇(degree::Integer, f::Function, x⃗::Vector{<:Real}; max_prec::Bool=
 end
 
 # %%%%%%%%%%%%%%%%%%%% Jacobian %%%%%%%%%%%%%%%%%%%%
+
+# Todo: ∂ for f::(Vector{<:Real}) -> Vector{<:Real}
 
 """
 Jacobian
