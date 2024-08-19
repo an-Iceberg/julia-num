@@ -7,7 +7,7 @@ df/dx
 
 `f::(Real) -> Real`
 """
-function d(degree::Integer, f::Function, x::Real; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Float64=0.1, depth::Integer=4)::Real
+function d(degree::Integer, f::Function, x::Real; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Real=0.1, depth::Integer=4)::Real
   if ext
     if max_prec
       return __d_h²_max_prec(degree, f, x)
@@ -23,7 +23,7 @@ function d(degree::Integer, f::Function, x::Real; max_prec::Bool=true, acc::Inte
   end
 end
 
-function __d(degree::Integer, f::Function, x::Real, h::Float64, acc::Integer)::Real
+function __d(degree::Integer, f::Function, x::Real, h::Real, acc::Integer)::Real
   # B/c accuracy is an integer, it's being clamped to avoid unnecessary exceptions
   if degree <= 1
     if acc <= 3
@@ -106,32 +106,33 @@ function __d_max_prec(degree::Integer, f::Function, x::Real, acc::Integer)::Real
   f_old = __d(degree, f, x, 0.1, acc)
   f_new = __d(degree, f, x, 0.01, acc)
   δ_old = abs(f_1 - f_old)
+  println("    δ = ", δ_old)
   δ_new = abs(f_1 - f_new)
-  δ_δ = δ_new - δ_old
+  println("    δ = ", δ_new)
   # In case f_1 is the most precise
   # if δ_δ > 0
   #   return f_1
   # end
   h = 0.01
-  while δ_δ <= 0
+  while δ_new > δ_old
     h /= 10
     f_old = f_new
     f_new = __d(degree, f, x, h, acc)
     δ_old = δ_new
     δ_new = abs(f_1 - f_new)
-    δ_δ = δ_new - δ_old
+    println("    δ = ", δ_new)
   end
   return f_old
 end
 
-function __d_h²(degree::Integer, f::Function, x::Real, acc::Integer, h::Float64=0.1, depth::Integer=4)::Real
+function __d_h²(degree::Integer, f::Function, x::Real, acc::Integer, h::Real=0.1, depth::Integer=4)::Real
   if depth > 9
     depth = 9
   end
   return __Dⱼₖ(degree, f, x, acc, h, 0, depth)
 end
 
-function __Dⱼₖ(degree::Integer, f::Function, x::Real, acc::Integer, h::Float64, j::Integer, k::Integer)::Real
+function __Dⱼₖ(degree::Integer, f::Function, x::Real, acc::Integer, h::Real, j::Integer, k::Integer)::Real
   if k == 0
     return __d(degree, f, x, h / 2^j, acc)
   end
@@ -192,7 +193,7 @@ end
 
 `f::(Vector{Real}) -> Real`
 """
-function ∂(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Float64=0.1, depth::Integer=4)::Real
+function ∂(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Real=0.1, depth::Integer=4)::Real
   if ext
     if max_prec
       return __∂_h²_max_prec(degree, f, x⃗, i)
@@ -208,7 +209,7 @@ function ∂(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer; max
   end
 end
 
-function __∂(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, h::Float64, acc::Integer)::Real
+function __∂(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, h::Real, acc::Integer)::Real
   # B/c accuracy is an integer, it's being clamped to avoid unnecessary exceptions
   h⃗ = zeros(length(x⃗))
   h⃗[i] = h
@@ -308,14 +309,14 @@ function __∂_max_prec(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::I
   return f_mid
 end
 
-function __∂_h²(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, acc::Integer, h::Float64=0.1, depth::Integer=4)::Real
+function __∂_h²(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, acc::Integer, h::Real=0.1, depth::Integer=4)::Real
   if depth > 9
     depth = 9
   end
   return __∂ⱼₖ(degree, f, x⃗, i, acc, h, 0, depth)
 end
 
-function __∂ⱼₖ(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, acc::Integer, h::Float64, j::Integer, k::Integer)::Real
+function __∂ⱼₖ(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, acc::Integer, h::Real, j::Integer, k::Integer)::Real
   if k == 0
     return __∂(degree, f, x⃗, i, h / 2^j, acc)
   end
@@ -375,7 +376,7 @@ Gradient
 
 `f::(Vector{Real}) -> Real`
 """
-function ∇(degree::Integer, f::Function, x⃗::Vector{<:Real}; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Float64=0.1, depth::Integer=4)::Vector{<:Real}
+function ∇(degree::Integer, f::Function, x⃗::Vector{<:Real}; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Real=0.1, depth::Integer=4)::Vector{<:Real}
   return [∂(degree, f, x⃗, i; max_prec=max_prec, acc=acc, ext=ext, h=h, depth=depth) for i in 1:length(x⃗)]
 end
 
@@ -383,12 +384,32 @@ end
 
 # Todo: ∂ for f::(Vector{<:Real}) -> Vector{<:Real}
 
+function ∂⃗(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Real, depth::Integer=4)::Vector{<:Real}
+end
+
+function __∂⃗(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, h::Real, acc::Integer)::Vector{<:Real}
+  h⃗ = zeros(length(x⃗))
+  h⃗[i] = h
+  if degree <= 1
+    if acc <= 3
+      # Accuracy 2
+      # ToDo: confirm that this works correctly
+      return [n / h for n in -(1 / 2)f(x⃗ - h⃗) + (1 / 2)f(x⃗ + h⃗)]
+    end
+  elseif degree == 2
+  elseif degree == 3
+  elseif degree == 4
+  elseif degree == 5
+  elseif degree <= 6
+  end
+end
+
 """
 Jacobian
 
 `f::(Vector{Real}) -> Vector{Real}`
 """
-function D(degree::Integer, f::Function, x⃗::Vector{<:Real}; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Float64=0.1, depth::Integer=4)::Vector{<:Real}
+function D(degree::Integer, f::Function, x⃗::Vector{<:Real}; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Real=0.1, depth::Integer=4)::Vector{<:Real}
   sol = []
   for i in 1:length(x⃗)
   end

@@ -11,17 +11,11 @@ f⁽¹⁾(x) = -ℯ^-(x - 2)^2 * ((2x - 4)sin(10x) - 10cos(10x))
 @printf "e^-(x-2)²⋅sin(10x)\n"
 @printf "  d               = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false))
 @printf "  d max prec      = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x))
-@printf "  d acc=8 h=1     = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1.0))
-@printf "  d acc=8 h=1e-1  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-1))
-@printf "  d acc=8 h=1e-2  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-2))
-@printf "  d acc=8 h=1e-3  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-3))
-@printf "  d acc=8 h=1e-4  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-4))
-@printf "  d acc=8 h=1e-5  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-5))
-@printf "  d acc=8 h=1e-6  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-6))
-@printf "  d acc=8 h=1e-7  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-7))
-@printf "  d acc=8 h=1e-8  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-8))
-@printf "  d acc=8 h=1e-9  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-9))
-@printf "  d acc=8 h=1e-10 = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=1e-10))
+println()
+for i in 0:10
+  h = 1 / 10^i
+  @printf "  d h=%.0e       = %.2e\n" h abs(f⁽¹⁾(x) - d(1, f, x; max_prec=false, h=h))
+end
 println()
 @printf "  d h²            = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; ext=true, max_prec=false))
 @printf "  d h² h=0.1 d=5  = %.2e\n" abs(f⁽¹⁾(x) - d(1, f, x; h=0.1, depth=5, ext=true, max_prec=false))
@@ -34,17 +28,11 @@ f⁽¹⁾₁(x) = 2x - 2
 @printf "x² - 2x + 1\n"
 @printf "  d               = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false))
 @printf "  d max prec      = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x))
-@printf "  d acc=8 h=1     = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1.0))
-@printf "  d acc=8 h=1e-1  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-1))
-@printf "  d acc=8 h=1e-2  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-2))
-@printf "  d acc=8 h=1e-3  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-3))
-@printf "  d acc=8 h=1e-4  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-4))
-@printf "  d acc=8 h=1e-5  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-5))
-@printf "  d acc=8 h=1e-6  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-6))
-@printf "  d acc=8 h=1e-7  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-7))
-@printf "  d acc=8 h=1e-8  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-8))
-@printf "  d acc=8 h=1e-9  = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-9))
-@printf "  d acc=8 h=1e-10 = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=1e-10))
+println()
+for i in 0:10
+  h = 1 / 10^i
+  @printf "  d h=%.0e       = %.2e\n" h abs(f⁽¹⁾₁(x) - d(1, f₁, x; max_prec=false, h=h))
+end
 println()
 @printf "  d h²            = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; ext=true, max_prec=false))
 @printf "  d h² max prec   = %.2e\n" abs(f⁽¹⁾₁(x) - d(1, f₁, x; ext=true))
@@ -55,17 +43,11 @@ f⁽¹⁾₂(x) = -1 / x^2
 @printf "1/x\n"
 @printf "  d               = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false))
 @printf "  d max prec      = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x))
-@printf "  d acc=8 h=1     = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1.0))
-@printf "  d acc=8 h=1e-1  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-1))
-@printf "  d acc=8 h=1e-2  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-2))
-@printf "  d acc=8 h=1e-3  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-3))
-@printf "  d acc=8 h=1e-4  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-4))
-@printf "  d acc=8 h=1e-5  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-5))
-@printf "  d acc=8 h=1e-6  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-6))
-@printf "  d acc=8 h=1e-7  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-7))
-@printf "  d acc=8 h=1e-8  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-8))
-@printf "  d acc=8 h=1e-9  = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-9))
-@printf "  d acc=8 h=1e-10 = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=1e-10))
+println()
+for i in 0:10
+  h = 1 / 10^i
+  @printf "  d h=%.0e       = %.2e\n" h abs(f⁽¹⁾₂(x) - d(1, f₂, x; max_prec=false, h=h))
+end
 println()
 @printf "  d h²            = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; ext=true, max_prec=false))
 @printf "  d h² max prec   = %.2e\n" abs(f⁽¹⁾₂(x) - d(1, f₂, x; ext=true))
@@ -76,17 +58,11 @@ f⁽¹⁾₃(x) = 1 / x
 @printf "log(|x|)\n"
 @printf "  d               = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false))
 @printf "  d max prec      = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x))
-@printf "  d acc=8 h=1     = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1.0))
-@printf "  d acc=8 h=1e-1  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-1))
-@printf "  d acc=8 h=1e-2  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-2))
-@printf "  d acc=8 h=1e-3  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-3))
-@printf "  d acc=8 h=1e-4  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-4))
-@printf "  d acc=8 h=1e-5  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-5))
-@printf "  d acc=8 h=1e-6  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-6))
-@printf "  d acc=8 h=1e-7  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-7))
-@printf "  d acc=8 h=1e-8  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-8))
-@printf "  d acc=8 h=1e-9  = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-9))
-@printf "  d acc=8 h=1e-10 = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=1e-10))
+println()
+for i in 0:10
+  h = 1 / 10^i
+  @printf "  d h=%.0e       = %.2e\n" h abs(f⁽¹⁾₃(x) - d(1, f₃, x; max_prec=false, h=h))
+end
 println()
 @printf "  d h²            = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; ext=true, max_prec=false))
 @printf "  d h² max prec   = %.2e\n" abs(f⁽¹⁾₃(x) - d(1, f₃, x; ext=true))
@@ -97,17 +73,11 @@ f⁽¹⁾₄(x) = cos(x)
 @printf "sin(x)\n"
 @printf "  d               = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false))
 @printf "  d max prec      = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x))
-@printf "  d acc=8 h=1     = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1.0))
-@printf "  d acc=8 h=1e-1  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-1))
-@printf "  d acc=8 h=1e-2  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-2))
-@printf "  d acc=8 h=1e-3  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-3))
-@printf "  d acc=8 h=1e-4  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-4))
-@printf "  d acc=8 h=1e-5  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-5))
-@printf "  d acc=8 h=1e-6  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-6))
-@printf "  d acc=8 h=1e-7  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-7))
-@printf "  d acc=8 h=1e-8  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-8))
-@printf "  d acc=8 h=1e-9  = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-9))
-@printf "  d acc=8 h=1e-10 = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=1e-10))
+println()
+for i in 0:10
+  h = 1 / 10^i
+  @printf "  d h=%.0e       = %.2e\n" h abs(f⁽¹⁾₄(x) - d(1, f₄, x; max_prec=false, h=h))
+end
 println()
 @printf "  d h²            = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; ext=true, max_prec=false))
 @printf "  d h² max prec   = %.2e\n" abs(f⁽¹⁾₄(x) - d(1, f₄, x; ext=true))
