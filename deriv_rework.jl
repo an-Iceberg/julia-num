@@ -3,7 +3,6 @@
 # %%%%%%%%%%%%%%%%%%%% Derivative %%%%%%%%%%%%%%%%%%%%
 
 # d¹
-# Todo: use Union{Real, Vector{<:Real}} for x
 """
 Calculates the 1ˢᵗ order derivative of `f` at `x` with precision `h` using 2 points.
 """
@@ -33,7 +32,6 @@ function d2_4(f::Function, x::Real, h::Float64=1e-3)
   return (-(1 / 12)f(x - 2h) + (4 / 3)f(x - h) - (5 / 2)f(x) + (4 / 3)f(x + h) - (1 / 12)f(x + 2h)) / h^2
 end
 
-# Fix this
 function d2_6(f::Function, x::Real, h::Float64=1e-3)
   return ((1 / 90)f(x - 3h) - (3 / 20)f(x - 2h) + (3 / 2)f(x - h) - (49 / 18)f(x) + (3 / 2)f(x + h) - (3 / 20)f(x + 2h) + (1 / 90)f(x + 3h)) / h^2
 end
