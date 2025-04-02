@@ -34,7 +34,7 @@ function __d(degree::Integer, f::Function, x::Real, h::Real, acc::Integer)::Real
       return ((1 / 12)f(x - 2h) - (2 / 3)f(x - h) + (2 / 3)f(x + h) - (1 / 12)f(x + 2h)) / h
     elseif 5 <= acc && acc <= 7
       # Accuracy 6
-      return (-(1 / 60)f(x - 3h) + (3 / 20)f(x - 2h) + (3 / 2)f(x - h) - (49 / 18)f(x) + (3 / 2)f(x + h) - (3 / 20)f(x + 2h) + (1 / 90)f(x + 3h)) / h
+      return (-(1 / 60)f(x - 3h) + 0.15f(x - 2h) - 0.75f(x - h) + 0.75f(x + h) - 0.15f(x + 2h) + (1 / 60)f(x + 3h)) / h
     elseif 7 <= acc
       # Accuracy 8
       return ((1 / 280)f(x - 4h) - (4 / 105)f(x - 3h) + (1 / 5)f(x - 2h) - (4 / 5)f(x - h) + (4 / 5)f(x + h) - (1 / 5)f(x + 2h) + (4 / 105)f(x + 3h) - (1 / 280)f(x + 4h)) / h
@@ -222,7 +222,7 @@ function __∂(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, h
       return ((1 / 12)f(x⃗ - 2h⃗) - (2 / 3)f(x⃗ - h⃗) + (2 / 3)f(x⃗ + h⃗) - (1 / 12)f(x⃗ + 2h⃗)) / h
     elseif 5 <= acc && acc <= 7
       # Accuracy 6
-      return (-(1 / 60)f(x⃗ - 3h⃗) + (3 / 20)f(x⃗ - 2h⃗) + (3 / 2)f(x⃗ - h⃗) - (49 / 18)f(x⃗) + (3 / 2)f(x⃗ + h⃗) - (3 / 20)f(x⃗ + 2h⃗) + (1 / 90)f(x⃗ + 3h⃗)) / h
+      return (-(1 / 60)f(x⃗ - 3h⃗) + (3 / 20)f(x⃗ - 2h⃗) + (3 / 2)f(x⃗ - h⃗) - (49 / 18)f(x⃗) + (3 / 2)f(x⃗ + h⃗) - (3 / 20)f(x⃗ + 2h⃗) + (1 / 60)f(x⃗ + 3h⃗)) / h
     elseif 7 <= acc
       # Accuracy 8
       return ((1 / 280)f(x⃗ - 4h⃗) - (4 / 105)f(x⃗ - 3h⃗) + (1 / 5)f(x⃗ - 2h⃗) - (4 / 5)f(x⃗ - h⃗) + (4 / 5)f(x⃗ + h⃗) - (1 / 5)f(x⃗ + 2h⃗) + (4 / 105)f(x⃗ + 3h⃗) - (1 / 280)f(x⃗ + 4h⃗)) / h
@@ -374,7 +374,7 @@ end
 """
 Gradient
 
-`f::(Vector{Real}) -> Real`
+`f::(Vector{Real}) -> Vector{Real}`
 """
 function ∇(degree::Integer, f::Function, x⃗::Vector{<:Real}; max_prec::Bool=true, acc::Integer=8, ext::Bool=false, h::Real=0.1, depth::Integer=4)::Vector{<:Real}
   return [∂(degree, f, x⃗, i; max_prec=max_prec, acc=acc, ext=ext, h=h, depth=depth) for i in 1:length(x⃗)]
