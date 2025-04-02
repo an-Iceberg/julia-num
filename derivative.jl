@@ -236,7 +236,7 @@ function __∂(degree::Integer, f::Function, x⃗::Vector{<:Real}, i::Integer, h
       return (-(1 / 12)f(x⃗ - 2h⃗) + (4 / 3)f(x⃗ - h⃗) - (5 / 2)f(x⃗) + (4 / 3)f(x⃗ + h⃗) - (1 / 12)f(x⃗ + 2h⃗)) / h^2
     elseif 5 <= acc && acc <= 7
       # Accuracy 6
-      return ((1 / 90)f(x⃗ - 3h⃗) - (3 / 20)f(x⃗ - 2h⃗) - (3 / 4)f(x⃗ - h⃗) + (3 / 4)f(x⃗ + h⃗) - (3 / 20)f(x⃗ + 2h⃗) + (1 / 60)f(x⃗ + 3h⃗)) / h^2
+      return ((1 / 90)f(x⃗ - 3h⃗) - (3 / 20)f(x⃗ - 2h⃗) + (3 / 2)f(x⃗ - h⃗) - (49 / 18)f(x⃗) + (3 / 2)f(x⃗ + h⃗) - (3 / 20)f(x⃗ + 2h⃗) + (1 / 90)f(x⃗ + 3h⃗)) / h^2
     elseif 7 <= acc
       # Accuracy 8
       return (-(1 / 560)f(x⃗ - 4h⃗) + (8 / 315)f(x⃗ - 3h⃗) - (1 / 5)f(x⃗ - 2h⃗) + (8 / 5)f(x⃗ - h⃗) - (205 / 72)f(x⃗) + (8 / 5)f(x⃗ + h⃗) - (1 / 5)f(x⃗ + 2h⃗) + (8 / 315)f(x⃗ + 3h⃗) - (1 / 560)f(x⃗ + 4h⃗)) / h^2
