@@ -1,10 +1,13 @@
+# Todo: add links to wikipedia formulas
+
 """
 Calculates the integral of `f` between `a` and `b` using Simpson's ⅓ rule, so
-using a polynomial of 2ⁿᵈ degree.
+using polynomials of 2ⁿᵈ degree.
 """
 function ∫_2(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
-  n = ceil((b - a) / h)
-  x(i) = a + (i * h)
+  # Todo: don't ceil and don't ::Int. Do that at the array comprehension
+  n::Int = ceil((b - a) / h)
+  x(i::Real)::Real = a + (i * h)
 
   # Todo: performance test, which one of these 2 is faster. They each give same precision
 
@@ -20,11 +23,11 @@ end
 
 """
 Calculates the integral of `f` between `a` and `b` using Simpson's ⅜ rule, so
-using a polynomial of 3ʳᵈ degree.
+using polynomials of 3ʳᵈ degree.
 """
 function ∫_3(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
-  n = ceil((b - a) / h)
-  x(i) = a + (i * h)
+  n::Int = ceil((b - a) / h)
+  x(i::Real)::Real = a + (i * h)
 
   # Note: none of these work 😭
 
@@ -56,11 +59,11 @@ end
 
 """
 Calculates the integral of `f` between `a` and `b` using Boole's rule, so
-using a polynomial of 4ʳᵈ degree.
+using polynomials of 4ʳᵈ degree.
 """
 function ∫_4(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
-  n = ceil((b - a) / h)
-  x(i) = a + (i * h)
+  n::Int = ceil((b - a) / h)
+  x(i::Real)::Real = a + (i * h)
 
   # Todo: performance test, which one of these 2 is faster. They each give same precision
 
