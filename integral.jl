@@ -7,7 +7,7 @@ Calculates the integral of `f` between `a` and `b` using
 """
 function ∫_2(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
   # Todo: don't ceil and don't ::Int. Do that at the array comprehension
-  n::Int = ceil((b - a) / h)
+  n = ceil((b - a) / h)
   x(i::Real)::Real = a + (i * h)
 
   # Todo: performance test, which one of these 2 is faster. They each give same precision
@@ -28,7 +28,7 @@ Calculates the integral of `f` between `a` and `b` using
 , so using polynomials of 3ʳᵈ degree.
 """
 function ∫_3(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
-  n::Int = ceil((b - a) / h)
+  n = ceil((b - a) / h)
   x(i::Real)::Real = a + (i * h)
 
   # Note: none of these work 😭
@@ -62,10 +62,10 @@ end
 """
 Calculates the integral of `f` between `a` and `b` using
 [Boole's rule](https://en.wikipedia.org/wiki/Finite_difference_coefficient)
-, so using polynomials of 4ʳᵈ degree.
+, so using polynomials of 4ᵗʰ degree.
 """
 function ∫_4(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
-  n::Int = ceil((b - a) / h)
+  n = ceil((b - a) / h)
   x(i::Real)::Real = a + (i * h)
 
   # Todo: performance test, which one of these 2 is faster. They each give same precision
@@ -79,3 +79,16 @@ function ∫_4(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
 
   return (2 / 45) * h * sum([7f(x(4i - 4)) + 32f(x(4i - 3)) + 12f(x(4i - 2)) + 32f(x(4i - 1)) + 7f(x(4i)) for i in 1:(n/4)])
 end
+
+using Printf
+
+@printf "--------------------- Integral (∫f) ---------------------\n\n"
+
+f(x) = cos(x)
+F(x) = sin(x)
+a = 0.0
+b = 5.0
+
+@printf "Simpson's ⅓:  ε = %.2e\n" abs(∫_2(a, b, f) - (F(b) - F(a)))
+@printf "Simpson's ⅜:  ε = %.2e\n" abs(∫_3(a, b, f) - (F(b) - F(a)))
+@printf "Boole's :     ε = %.2e\n" abs(∫_4(a, b, f) - (F(b) - F(a)))

@@ -1,3 +1,5 @@
+# f::(Vector{<:Real})::Vector{<:Real}
+
 # ∇¹
 
 function ∇1_2(f, x⃗, h::Real=1e-3)
@@ -8,7 +10,9 @@ end
 
 function ∇1_4(f, x⃗, h::Real=1e-3)
   h⃗ = [h for _ in x⃗]
-  return ((1 / 12)f(x⃗ - 2h⃗) - (2 / 3)f(x⃗ - h⃗) + (2 / 3)f(x⃗ + h⃗) - (1 / 12)f(x⃗ + 2h⃗)) / h
+  #! format: off
+  return ((1/12)f(x⃗ - 2h⃗) - (2/3)f(x⃗ - h⃗) + (2/3)f(x⃗ + h⃗) - (1/12)f(x⃗ + 2h⃗)) / h
+  #! format: on
 end
 
 function ∇1_6(f, x⃗, h::Real=1e-3)
@@ -110,3 +114,49 @@ function ∇6_6(f, x⃗, h::Real=1e-3)
   h⃗ = [h for _ in x⃗]
   return ((13 / 240)f(x⃗ - 5h⃗) - (19 / 24)f(x⃗ - 4h⃗) + (87 / 16)f(x⃗ - 3h⃗) - (39 / 2)f(x⃗ - 2h⃗) + (323 / 8)f(x⃗ - h⃗) - (1023 / 20)f(x⃗) + (323 / 8)f(x⃗ + h⃗) - (39 / 2)f(x⃗ + 2h⃗) + (87 / 16)f(x⃗ + 3h⃗) - (19 / 24)f(x⃗ + 4h⃗) + (13 / 240)f(x⃗ + 5h⃗)) / h^6
 end
+
+using Printf
+
+@printf "--------------------- Gradient (∇f) ---------------------\n\n"
+
+x⃗ = [Float64(π), Float64(π)]
+f(x⃗) = [sin(x⃗[1]), cos(x⃗[2])]
+∂1x_f(x⃗) = cos(x⃗[1])
+∂1y_f(x⃗) = -sin(x⃗[1])
+∂2x_f(x⃗) = -sin(x⃗[1])
+∂2y_f(x⃗) = -cos(x⃗[1])
+∂3x_f(x⃗) = -cos(x⃗[1])
+∂3y_f(x⃗) = sin(x⃗[1])
+∂4x_f(x⃗) = sin(x⃗[1])
+∂4y_f(x⃗) = cos(x⃗[1])
+∂5x_f(x⃗) = cos(x⃗[1])
+∂5y_f(x⃗) = -sin(x⃗[1])
+∂6x_f(x⃗) = -sin(x⃗[1])
+∂6y_f(x⃗) = -cos(x⃗[1])
+
+# a = analytical solution, n = numerical solution
+@printf "∇1_2: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂1x_f(x⃗), ∂1y_f(x⃗)], ∇1_2(f, x⃗))])
+@printf "∇1_4: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂1x_f(x⃗), ∂1y_f(x⃗)], ∇1_4(f, x⃗))])
+@printf "∇1_6: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂1x_f(x⃗), ∂1y_f(x⃗)], ∇1_6(f, x⃗))])
+@printf "∇1_8: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂1x_f(x⃗), ∂1y_f(x⃗)], ∇1_8(f, x⃗))])
+@printf "\n"
+@printf "∇2_2: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂2x_f(x⃗), ∂2y_f(x⃗)], ∇2_2(f, x⃗))])
+@printf "∇2_4: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂2x_f(x⃗), ∂2y_f(x⃗)], ∇2_4(f, x⃗))])
+@printf "∇2_6: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂2x_f(x⃗), ∂2y_f(x⃗)], ∇2_6(f, x⃗))])
+@printf "∇2_8: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂2x_f(x⃗), ∂2y_f(x⃗)], ∇2_8(f, x⃗))])
+@printf "\n"
+@printf "∇3_2: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂3x_f(x⃗), ∂3y_f(x⃗)], ∇3_2(f, x⃗))])
+@printf "∇3_4: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂3x_f(x⃗), ∂3y_f(x⃗)], ∇3_4(f, x⃗))])
+@printf "∇3_6: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂3x_f(x⃗), ∂3y_f(x⃗)], ∇3_6(f, x⃗))])
+@printf "\n"
+@printf "∇4_2: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂4x_f(x⃗), ∂4y_f(x⃗)], ∇4_2(f, x⃗))])
+@printf "∇4_4: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂4x_f(x⃗), ∂4y_f(x⃗)], ∇4_4(f, x⃗))])
+@printf "∇4_6: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂4x_f(x⃗), ∂4y_f(x⃗)], ∇4_6(f, x⃗))])
+@printf "\n"
+@printf "∇5_2: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂5x_f(x⃗), ∂5y_f(x⃗)], ∇5_2(f, x⃗, 0.01))])
+@printf "∇5_4: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂5x_f(x⃗), ∂5y_f(x⃗)], ∇5_4(f, x⃗, 0.01))])
+@printf "∇5_6: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂5x_f(x⃗), ∂5y_f(x⃗)], ∇5_6(f, x⃗, 0.01))])
+@printf "\n"
+@printf "∇6_2: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂6x_f(x⃗), ∂6y_f(x⃗)], ∇6_2(f, x⃗, 0.01))])
+@printf "∇6_4: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂6x_f(x⃗), ∂6y_f(x⃗)], ∇6_4(f, x⃗, 0.01))])
+@printf "∇6_6: %.2e\n" maximum([abs(a - n) for (a, n) in zip([∂6x_f(x⃗), ∂6y_f(x⃗)], ∇6_6(f, x⃗, 0.01))])

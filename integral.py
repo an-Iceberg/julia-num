@@ -2,8 +2,12 @@ from typing import Callable
 from math import cos, sin
 
 
-# https://en.wikipedia.org/wiki/Simpson%27s_rule#Composite_Simpson's_1/3_rule
 def int_2(a: float, b: float, f: Callable[[float], float], h: float = 1e-2) -> float:
+    """
+    Calculates the integral of `f` between `a` and `b` using
+    [Simpson's ⅓ rule](https://en.wikipedia.org/wiki/Simpson%27s_rule#Composite_Simpson's_1/3_rule)
+    , so using polynomials of 2ⁿᵈ degree.
+    """
     n = (b - a) / h
 
     def x(i: float) -> float:
@@ -14,8 +18,12 @@ def int_2(a: float, b: float, f: Callable[[float], float], h: float = 1e-2) -> f
     # fmt: on
 
 
-# https://en.wikipedia.org/wiki/Simpson%27s_rule#Composite_Simpson's_3/8_rule
 def int_3(a: float, b: float, f: Callable[[float], float], h: float = 1e-2) -> float:
+    """
+    Calculates the integral of `f` between `a` and `b` using
+    [Simpson's ⅜ rule](https://en.wikipedia.org/wiki/Simpson%27s_rule#Composite_Simpson's_3/8_rule)
+    , so using polynomials of 3ʳᵈ degree.
+    """
     n = (b - a) / h
 
     def x(i: float) -> float:
@@ -26,8 +34,12 @@ def int_3(a: float, b: float, f: Callable[[float], float], h: float = 1e-2) -> f
     # fmt: on
 
 
-# https://en.wikipedia.org/wiki/Boole%27s_rule
 def int_4(a: float, b: float, f: Callable[[float], float], h: float = 1e-2) -> float:
+    """
+    Calculates the integral of `f` between `a` and `b` using
+    [Boole's rule](https://en.wikipedia.org/wiki/Finite_difference_coefficient)
+    , so using polynomials of 4ᵗʰ degree.
+    """
     n = (b - a) / h
 
     def x(i: float) -> float:

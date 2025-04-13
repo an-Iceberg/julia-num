@@ -3,7 +3,6 @@ include("partial.jl")
 # D¹
 
 function D1_2(f::Function, x⃗::Vector{<:Real}, h::Float64=1e-3)::Matrix
-  println(∂1_2(f, x⃗, 1, h))
   return stack([∂1_2(f, x⃗, i, h) for i in 1:length(x⃗)])
 end
 
@@ -153,3 +152,19 @@ end
 # display(D1_4(f, x⃗))
 # display(D1_6(f, x⃗))
 # display(D1_8(f, x⃗))
+
+using Printf
+
+@printf "--------------------- Jacobian (Df) ---------------------\n\n"
+
+f1(x) = x[1] + x[2]^2 - x[3]^2 - 13
+f2(x) = log(x[2] / 4) + ℯ^(0.5x[3] - 1) - 1
+f3(x) = (x[2] - 3)^2 - x[3]^3 + 7
+
+f(λ) = [f1(λ), f2(λ), f3(λ)]
+x⃗ = [1.5, 3, 2.5]
+
+display(D1_2(f, x⃗))
+display(D1_4(f, x⃗))
+display(D1_6(f, x⃗))
+display(D1_8(f, x⃗))
