@@ -1,5 +1,10 @@
 # https://en.wikipedia.org/wiki/Finite_difference_coefficient
 
+# https://discourse.julialang.org/t/how-to-do-partial-derivatives/19869/6
+# https://stackoverflow.com/questions/54277219/partial-derivatives-in-julia
+# https://discourse.julialang.org/t/round-a-float-and-force-a-specific-number-of-decimal-places/87547
+# https://www.math.hkust.edu.hk/~mamu/courses/231/Slides/CH04_1B.pdf
+
 # d¹
 """
 Calculates the 1ˢᵗ order derivative df/dx of `f` at `x` with precision `h` using 2 points.

@@ -2,6 +2,8 @@
 
 # ∂¹
 
+# Todo: performance testing
+
 function ∂1_2(f::Function, x⃗::Vector{<:Real}, i::Int, h::Real=1e-3)::Union{Real,Vector{<:Real}}
   # h⃗ = zeros(length(x⃗))
   # h⃗[i] = h
