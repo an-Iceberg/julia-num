@@ -1,3 +1,5 @@
+include("derivative_broadcast.jl")
+
 # f::(Vector{<:Real})::Real
 
 # ∂¹
@@ -5,19 +7,23 @@
 # Todo: performance testing
 
 function ∂1_2(f::Function, x⃗::Vector{<:Real}, i::Int, h::Real=1e-3)::Union{Real,Vector{<:Real}}
+  h⃗ = zeros(length(x⃗))
+  h⃗[i] = h
+  # return (-0.5f(x⃗ - h⃗) + 0.5f(x⃗ + h⃗)) / h
+
   # This is for performance reasons. Each time we need to evalute f we only modify the relevant
   # vector entry instead of creating another vector.
-  x_local = copy(x⃗)
+  # x_local = copy(x⃗)
 
   # Info: this is a closure and captures its environment. That's why it can't be refactored to be
   # placed outside of this function's scope
-  function x(h)
-    x_local[i] = x⃗[i]
-    x_local[i] += h
-    return x_local
-  end
+  # function x(h)
+  #   x_local[i] = x⃗[i]
+  #   x_local[i] += h
+  #   return x_local
+  # end
 
-  return (-0.5f(x(-h)) + 0.5f(x(h))) / h
+  return d1_2(f, x⃗, h)
 end
 
 function ∂1_4(f::Function, x⃗::Vector{<:Real}, i::Int, h::Real=1e-3)::Union{Real,Vector{<:Real}}
