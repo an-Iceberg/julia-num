@@ -46,45 +46,45 @@ end
 x⃗ = [Float64(π), Float64(π)]
 f(x⃗) = sin(x⃗[1]) + cos(x⃗[2])
 
-@time "single ∂1_2_slow" begin
-  ∂1_2_slow(f, x⃗, 1)
-end
-@time "single ∂1_2_fast" begin
-  ∂1_2_fast(f, x⃗, 1)
-end
+# @time "single ∂1_2_slow" begin
+#   ∂1_2_slow(f, x⃗, 1)
+# end
+# @time "single ∂1_2_fast" begin
+#   ∂1_2_fast(f, x⃗, 1)
+# end
 
-@time "loop ∂1_2_slow" begin
-  for _ in 1:1000
-    ∂1_2_slow(f, x⃗, 1)
-  end
-end
+# @time "loop ∂1_2_slow" begin
+#   for _ in 1:1000
+#     ∂1_2_slow(f, x⃗, 1)
+#   end
+# end
 
-@time "loop ∂1_2_fast" begin
-  for _ in 1:1000
-    ∂1_2_fast(f, x⃗, 1)
-  end
-end
+# @time "loop ∂1_2_fast" begin
+#   for _ in 1:1000
+#     ∂1_2_fast(f, x⃗, 1)
+#   end
+# end
 
-println()
+# println()
 
-@time "single ∂1_4_slow" begin
-  ∂1_4_slow(f, x⃗, 1)
-end
-@time "single ∂1_4_fast" begin
-  ∂1_4_fast(f, x⃗, 1)
-end
+# @time "single ∂1_4_slow" begin
+#   ∂1_4_slow(f, x⃗, 1)
+# end
+# @time "single ∂1_4_fast" begin
+#   ∂1_4_fast(f, x⃗, 1)
+# end
 
-@time "loop ∂1_4_slow" begin
-  for _ in 1:1000
-    ∂1_4_slow(f, x⃗, 1)
-  end
-end
+# @time "loop ∂1_4_slow" begin
+#   for _ in 1:1000
+#     ∂1_4_slow(f, x⃗, 1)
+#   end
+# end
 
-@time "loop ∂1_4_fast" begin
-  for _ in 1:1000
-    ∂1_4_fast(f, x⃗, 1)
-  end
-end
+# @time "loop ∂1_4_fast" begin
+#   for _ in 1:1000
+#     ∂1_4_fast(f, x⃗, 1)
+#   end
+# end
 
 # @showtime
 # @timev
@@ -95,36 +95,101 @@ println()
 
 using Dates
 
-iter_count = 5_000_000
+# iter_count = 5_000_000
 
-t1 = now()
-for _ in 1:iter_count
-  ∂1_2_slow(f, x⃗, 1)
-end
-t2 = now()
-Δt = abs(t1 - t2)
-println("∂1_2_slow: $Δt")
+# t1 = now()
+# for _ in 1:iter_count
+#   ∂1_2_slow(f, x⃗, 1)
+# end
+# t2 = now()
+# Δt = abs(t1 - t2) / Millisecond(1000)
+# println("∂1_2_slow: $Δt")
 
-t1 = now()
-for _ in 1:iter_count
-  ∂1_2_fast(f, x⃗, 1)
-end
-t2 = now()
-Δt = abs(t1 - t2)
-println("∂1_2_fast: $Δt")
+# t1 = now()
+# for _ in 1:iter_count
+#   ∂1_2_fast(f, x⃗, 1)
+# end
+# t2 = now()
+# Δt = abs(t1 - t2) / Millisecond(1000)
+# println("∂1_2_fast: $Δt")
 
-t1 = now()
-for _ in 1:iter_count
-  ∂1_4_slow(f, x⃗, 1)
-end
-t2 = now()
-Δt = abs(t1 - t2)
-println("∂1_4_slow: $Δt")
+# t1 = now()
+# for _ in 1:iter_count
+#   ∂1_4_slow(f, x⃗, 1)
+# end
+# t2 = now()
+# Δt = abs(t1 - t2) / Millisecond(1000)
+# println("∂1_4_slow: $Δt")
 
-t1 = now()
-for _ in 1:iter_count
-  ∂1_4_fast(f, x⃗, 1)
+# t1 = now()
+# for _ in 1:iter_count
+#   ∂1_4_fast(f, x⃗, 1)
+# end
+# t2 = now()
+# Δt = abs(t1 - t2) / Millisecond(1000)
+# println("∂1_4_fast: $Δt")
+
+# %%%%%%%%%%%%%%%%%%%% Stats %%%%%%%%%%%%%%%%%%%%
+
+using CairoMakie
+using DataFrames
+
+# https://docs.makie.org/dev/reference/plots/barplot
+# https://discourse.julialang.org/t/dodged-barplot-got-thin-out-in-makie/87923/5
+# https://discourse.julialang.org/t/need-help-in-formatting-bar-plot-in-makie/80496
+
+# Todo: use Dataframes
+iter_counts = [1_000, 2_000, 5_000, 10_000, 20_000, 50_000, 100_000, 200_000, 500_000]
+slow_times = []
+fast_times = []
+
+x_labels = ["1'000", "2'000", "5'000", "10'000", "20'000", "50'000", "100'000", "200'000", "500'000"]
+
+println("Running performances tests…")
+for iter_count in iter_counts
+  t1 = now()
+  for _ in 1:iter_count
+    ∂1_4_slow(f, x⃗, 1)
+  end
+  t2 = now()
+  # Δt = abs(t1 - t2) / Millisecond(1000)
+  append!(slow_times, abs(t1 - t2) / Millisecond(1000))
+
+  t1 = now()
+  for _ in 1:iter_count
+    ∂1_4_fast(f, x⃗, 1)
+  end
+  t2 = now()
+  append!(fast_times, abs(t1 - t2) / Millisecond(1000))
 end
-t2 = now()
-Δt = abs(t1 - t2)
-println("∂1_4_fast: $Δt")
+println("Done…")
+println()
+
+println("Creating plot…")
+figure = Figure()
+ax = Axis(
+  figure[1, 1],
+  title="Benchmark",
+  xlabel="# of function calls",
+  ylabel="duration in seconds",
+  xticks=(1:length(iter_counts), x_labels),
+  yscale=log
+  # xscale=log
+)
+# scatter!(ax, iter_counts, slow_times, label="slower implementation")
+# scatter!(ax, iter_counts, fast_times, label="faster implementation")
+barplot!(
+  ax,
+  slow_times,
+  label="slower impl.",
+  strokewidth=1,
+  width=0.5,
+  gap=0
+)
+barplot!(ax, fast_times, label="faster impl.", strokewidth=1, width=0.5, gap=0)
+axislegend(position=:lt)
+save("benchmark.png", figure)
+println("Done…")
+
+# Todo: research this
+# using Format
