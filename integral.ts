@@ -1,12 +1,12 @@
-function range(from: number, to: number, step: number = 1): number[] {
-  return [...Array(Math.floor((to - from) / step) + 1)]
-    .map((_, i) => from + i * step);
+function range(from: number, to: number): number[] {
+  return [...Array(Math.floor(to - from) + 1)]
+    .map((_, i) => from + i);
 }
 
 /**
  * Calculates the integral of `f` between `a` and `b` using
- * [Simpson's ⅜ rule](https://en.wikipedia.org/wiki/Simpson%27s_rule#Composite_Simpson's_3/8_rule)
- * , so using polynomials of 3ʳᵈ degree.
+ * [Simpson's ⅓ rule](https://en.wikipedia.org/wiki/Simpson%27s_rule#Composite_Simpson's_1/3_rule)
+ * , so using polynomials of 2ⁿᵈ degree.
  */
 function int_2(
   a: number,
@@ -14,19 +14,19 @@ function int_2(
   f: (x: number) => number,
   h: number = 1e-2,
 ): number {
-  let n = Math.ceil((b - a) / h);
+  const n = Math.ceil((b - a) / h);
   const x = (i: number): number => a + (i * h);
 
   // deno-fmt-ignore
   return (1/3)*h*range(1, n/2)
     .map(i => f(x(2*i - 2)) + 4*f(x(2*i - 1)) + f(x(2*i)))
-    .reduce((prev, current) => prev + current); // Sum
+    .reduce((Σ, σ) => Σ + σ); // Sum
 }
 
 /**
  * Calculates the integral of `f` between `a` and `b` using
- * [Boole's rule](https://en.wikipedia.org/wiki/Finite_difference_coefficient)
- * , so using polynomials of 4ʳᵈ degree.
+ * [Simpson's ⅜ rule](https://en.wikipedia.org/wiki/Simpson%27s_rule#Composite_Simpson's_3/8_rule)
+ * , so using polynomials of 3ʳᵈ degree.
  */
 function int_3(
   a: number,
@@ -34,7 +34,7 @@ function int_3(
   f: (x: number) => number,
   h: number = 1e-2,
 ): number {
-  let n = Math.ceil((b - a) / h);
+  const n = Math.ceil((b - a) / h);
   const x = (i: number): number => a + (i * h);
 
   // deno-fmt-ignore
@@ -54,7 +54,7 @@ function int_4(
   f: (x: number) => number,
   h: number = 1e-2,
 ): number {
-  let n = Math.ceil((b - a) / h);
+  const n = Math.ceil((b - a) / h);
   const x = (i: number): number => a + (i * h);
 
   // deno-fmt-ignore
@@ -69,24 +69,29 @@ function int_4(
   let a = 0.0;
   let b = 5.0;
 
+  console.log("f(x) = sin(x)");
+  console.log(`a = ${a}, b = ${b}`);
+
   // deno-fmt-ignore
-  console.log(`Simpson's ⅓: ε = ${Math.abs(int_2(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Simpson's 1/3: ε = ${Math.abs(int_2(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
   // deno-fmt-ignore
-  console.log(`Simpson's ⅜: ε = ${Math.abs(int_3(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Simpson's 3/8: ε = ${Math.abs(int_3(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
   // deno-fmt-ignore
-  console.log(`Boole's    : ε = ${Math.abs(int_4(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Boole's      : ε = ${Math.abs(int_4(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
 
   console.log();
 
   a = 30.;
   b = 40;
 
+  console.log(`a = ${a}, b = ${b}`);
+
   // deno-fmt-ignore
-  console.log(`Simpson's ⅓: ε = ${Math.abs(int_2(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Simpson's 1/3: ε = ${Math.abs(int_2(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
   // deno-fmt-ignore
-  console.log(`Simpson's ⅜: ε = ${Math.abs(int_3(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Simpson's 3/8: ε = ${Math.abs(int_3(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
   // deno-fmt-ignore
-  console.log(`Boole's    : ε = ${Math.abs(int_4(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Boole's      : ε = ${Math.abs(int_4(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
 }
 
 console.log();
@@ -97,22 +102,27 @@ console.log();
   let a = 1.0;
   let b = 5.0;
 
+  console.log("f(x) = 1/x");
+  console.log(`a = ${a}, b = ${b}`);
+
   // deno-fmt-ignore
-  console.log(`Simpson's ⅓: ε = ${Math.abs(int_2(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Simpson's 1/3: ε = ${Math.abs(int_2(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
   // deno-fmt-ignore
-  console.log(`Simpson's ⅜: ε = ${Math.abs(int_3(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Simpson's 3/8: ε = ${Math.abs(int_3(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
   // deno-fmt-ignore
-  console.log(`Boole's    : ε = ${Math.abs(int_4(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Boole's      : ε = ${Math.abs(int_4(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
 
   console.log();
 
   a = 100.0;
   b = 150.0;
 
+  console.log(`a = ${a}, b = ${b}`);
+
   // deno-fmt-ignore
-  console.log(`Simpson's ⅓: ε = ${Math.abs(int_2(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Simpson's 1/3: ε = ${Math.abs(int_2(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
   // deno-fmt-ignore
-  console.log(`Simpson's ⅜: ε = ${Math.abs(int_3(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Simpson's 3/8: ε = ${Math.abs(int_3(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
   // deno-fmt-ignore
-  console.log(`Boole's    : ε = ${Math.abs(int_4(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
+  console.log(`Boole's      : ε = ${Math.abs(int_4(a, b, f) - (F(b) - F(a))).toExponential(2)}`);
 }
