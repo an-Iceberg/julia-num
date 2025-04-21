@@ -33,11 +33,19 @@ function gauss_newton(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Real}, y::
   # Todo: implement
   while iter_count < n && increment > h
     Q, R = qr(D1_4(g, λ, h))
-    break
+    δ = R \ (.-transpose(Matrix(Q)) * g(λ))
+    λ += δ
+    increment = norm(δ)
+    iter_count += 1
   end
 
   return (λ, Ẽ(λ), iter_count)
 end
+
+function gauss_newton_damped(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Real}, y::Vector{<:Real}, h::Real=1e-3, n::Int=200)::Tuple{Vector{<:Real},Real,Int}
+end
+
+using Format
 
 x = [0, 1, 2, 3, 4]
 y = [3, 1, 0.5, 0.2, 0.05]
@@ -51,7 +59,11 @@ h = 1e-7
 λ = [2.0, 2.0]
 
 λ, Ẽ, n = gauss_newton(f, λ, x, y, h)
-a = round(λ[1]; digits=2)
-b = round(λ[2]; digits=2)
-println("f(x) = $a⋅ℯ^($b⋅x)")
-println("Ẽ = $Ẽ")
+a, b = λ[1], λ[2]
+# a = round(λ[1]; digits=2)
+# b = round(λ[2]; digits=2)
+# println("f(x) = $a⋅ℯ^($b⋅x)")
+# println("Ẽ = $Ẽ")
+printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
+printfmtln("Ẽ = {:.2e}", Ẽ)
+println("in $(n) iterations")
