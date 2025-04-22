@@ -92,6 +92,8 @@ function D6_6(f::Function, x⃗::Vector{<:Real}, h::Float64=1e-3)::Matrix
   return stack([∂6_6(f, x⃗, i, h) for i in 1:length(x⃗)])
 end
 
+#=
+
 # x = [1, 2, 3]
 # y = copy(x)
 # x[1] = 5
@@ -153,6 +155,8 @@ end
 # display(D1_6(f, x⃗))
 # display(D1_8(f, x⃗))
 
+# Todo: use Format
+
 using Printf
 
 @printf "--------------------- Jacobian (Df) ---------------------\n\n"
@@ -168,3 +172,4 @@ display(D1_2(f, x⃗))
 display(D1_4(f, x⃗))
 display(D1_6(f, x⃗))
 display(D1_8(f, x⃗))
+=#

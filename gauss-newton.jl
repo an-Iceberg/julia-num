@@ -17,11 +17,7 @@ include("jacobian.jl")
 
 **Returns**:
 
-Fitted coefficients
-
-error
-
-\\# of iterations
+(Fitted coefficients, mean square error, \\# of iterations)
 """
 function gauss_newton(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Real}, y::Vector{<:Real}, h::Real=1e-3, n::Int=200)::Tuple{Vector{<:Real},Real,Int}
   g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
@@ -30,7 +26,6 @@ function gauss_newton(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Real}, y::
   iter_count = 0
   λ = copy(λ₀)
 
-  # Todo: implement
   while iter_count < n && increment > h
     Q, R = qr(D1_4(g, λ, h))
     δ = R \ (.-transpose(Matrix(Q)) * g(λ))
@@ -42,7 +37,50 @@ function gauss_newton(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Real}, y::
   return (λ, Ẽ(λ), iter_count)
 end
 
+"""
+`f::(Real, Vector{<:Real})::Real` Function, which takes in a scalar `x` and an array of coefficients.
+
+`λ₀` Initial coefficients
+
+`x` x part of datapoints
+
+`y` y part of datapoints
+
+`h` Precision
+
+`n` # of iterations to do
+
+**Returns**:
+
+(Fitted coefficients, mean square error, \\# of iterations)
+"""
 function gauss_newton_damped(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Real}, y::Vector{<:Real}, h::Real=1e-3, n::Int=200)::Tuple{Vector{<:Real},Real,Int}
+  g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
+  Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
+  increment = h + 1
+  iter_count = 0
+  λ = copy(λ₀)
+
+  while iter_count < n && increment > h
+    Q, R = qr(D1_4(g, λ, h))
+    δ = R \ (.-transpose(Matrix(Q)) * g(λ))
+
+    p = 0
+
+    norm_damped = norm(g(λ + (δ / 2^p)))
+    norm_undamped = norm(g(λ))^2 # Todo: g(λ) or gλ = g(λ) ?
+    while norm_damped > norm_undamped
+      p += 1
+      norm_damped = norm(g(λ + (δ / 2^p)))
+      norm_undamped = norm(g(λ))^2 # Todo: g(λ) or gλ = g(λ) ?
+    end
+
+    λ += δ / 2^p
+    increment = norm(δ)
+    iter_count += 1
+  end
+
+  return (λ, Ẽ(λ), iter_count)
 end
 
 using Format
@@ -56,14 +94,25 @@ function f(x::Real, coefs::Vector{<:Real})::Real
 end
 
 h = 1e-7
-λ = [2.0, 2.0]
+λ = [1.0, 1.0]
 
 λ, Ẽ, n = gauss_newton(f, λ, x, y, h)
 a, b = λ[1], λ[2]
-# a = round(λ[1]; digits=2)
-# b = round(λ[2]; digits=2)
-# println("f(x) = $a⋅ℯ^($b⋅x)")
-# println("Ẽ = $Ẽ")
 printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
 printfmtln("Ẽ = {:.2e}", Ẽ)
 println("in $(n) iterations")
+
+x_line = collect(LinRange(x[1], x[end], 200))
+y_line = [f(x, λ) for x in x_line]
+
+using CairoMakie
+
+figure = Figure()
+
+ax = Axis(figure[1, 1], title="Gauss-Newton undamped example")
+lines!(ax, x_line, y_line, label="fitted function")
+scatter!(ax, x, y, label="data", color=:orange)
+
+axislegend(position=:rt)
+
+save("gauss_newton_undamped.png", figure)

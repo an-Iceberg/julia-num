@@ -34,7 +34,7 @@ def g(λ: Vector) -> Vector:
 max_iter_count = 100
 
 # Ungedämpft
-λ, count = num.gauss_newton(g, λ_2, ε, max_iter_count)
+λ, count = num.gauss_newton_print(g, λ_2, ε, max_iter_count)
 a, b = λ
 a = round(a, 4)
 b = round(b, 4)

@@ -144,6 +144,9 @@ function ∂6_6(f::Function, x⃗::Vector{<:Real}, i::Int, h::Real=1e-3)::Union{
   return ((13 / 240)f(x⃗ - 5h⃗) - (19 / 24)f(x⃗ - 4h⃗) + (87 / 16)f(x⃗ - 3h⃗) - (39 / 2)f(x⃗ - 2h⃗) + (323 / 8)f(x⃗ - h⃗) - (1023 / 20)f(x⃗) + (323 / 8)f(x⃗ + h⃗) - (39 / 2)f(x⃗ + 2h⃗) + (87 / 16)f(x⃗ + 3h⃗) - (19 / 24)f(x⃗ + 4h⃗) + (13 / 240)f(x⃗ + 5h⃗)) / h^6
 end
 
+# Todo: use Format
+
+#=
 using Printf
 
 @printf "--------------------- Partial differentiation (∂f) ---------------------\n\n"
@@ -217,3 +220,4 @@ f(x⃗) = sin(x⃗[1]) + cos(x⃗[2])
 @printf "∂6_2: %.2e\n" abs(∂6y_f(x⃗) - ∂6_2(f, x⃗, 2, 0.1))
 @printf "∂6_4: %.2e\n" abs(∂6y_f(x⃗) - ∂6_4(f, x⃗, 2, 0.1))
 @printf "∂6_6: %.2e\n" abs(∂6y_f(x⃗) - ∂6_6(f, x⃗, 2, 0.1))
+=#

@@ -100,6 +100,9 @@ function d6_6(f::Function, x::Real, h::Real=1e-3)::Real
   return ((13 / 240)f(x - 5h) - (19 / 24)f(x - 4h) + 5.4375f(x - 3h) - 19.5f(x - 2h) + 40.375f(x - h) - 51.15f(x) + 40.375f(x - h) - 19.5f(x - 2h) + 5.4375f(x - 3h) - (19 / 24)f(x - 4h) + (13 / 240)f(x - 5h)) / h^6
 end
 
+# Todo: use Format
+
+#=
 using Printf
 
 @printf "--------------------- Differentiation (df) ---------------------\n\n"
@@ -138,3 +141,4 @@ d6f(x) = -sin(x)
 @printf "d6_2: %.2e\n" abs(d6f(x) - d6_2(f, x, 1.0))
 @printf "d6_4: %.2e\n" abs(d6f(x) - d6_4(f, x, 1.0))
 @printf "d6_6: %.2e\n" abs(d6f(x) - d6_6(f, x, 1.0))
+=#

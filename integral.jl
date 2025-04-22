@@ -80,15 +80,15 @@ function ∫_4(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
   return (2 / 45) * h * sum([7f(x(4i - 4)) + 32f(x(4i - 3)) + 12f(x(4i - 2)) + 32f(x(4i - 1)) + 7f(x(4i)) for i in 1:(n/4)])
 end
 
-using Printf
+using Format
 
-@printf "--------------------- Integral (∫f) ---------------------\n\n"
+println("--------------------- Integral (∫f) ---------------------\n")
 
 f(x) = cos(x)
 F(x) = sin(x)
 a = 0.0
 b = 5.0
 
-@printf "Simpson's ⅓:  ε = %.2e\n" abs(∫_2(a, b, f) - (F(b) - F(a)))
-@printf "Simpson's ⅜:  ε = %.2e\n" abs(∫_3(a, b, f) - (F(b) - F(a)))
-@printf "Boole's :     ε = %.2e\n" abs(∫_4(a, b, f) - (F(b) - F(a)))
+printfmtln("Simpson's 1/3: ε = {:.2e}", abs(∫_2(a, b, f) - (F(b) - F(a))))
+printfmtln("Simpson's 3/8: ε = {:.2e}", abs(∫_3(a, b, f) - (F(b) - F(a))))
+printfmtln("Boole's      : ε = {:.2e}", abs(∫_4(a, b, f) - (F(b) - F(a))))
