@@ -9,6 +9,8 @@ function ∂1_2(f::Function, x⃗::Vector{<:Real}, i::Int, h::Real=1e-3)::Union{
   # vector entry instead of creating another vector.
   x_local = copy(x⃗)
 
+  # Note: further performacne improvement: create local copy of x[i]
+
   # Info: this is a closure and captures its environment. That's why it can't be refactored to be
   # placed outside of this function's scope
   function x(h)
