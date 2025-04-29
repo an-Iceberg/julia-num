@@ -22,6 +22,7 @@ include("jacobian.jl")
 function gauss_newton(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Real}, y::Vector{<:Real}, h::Real=1e-3, n::Int=200)::Tuple{Vector{<:Real},Real,Int}
   g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
   Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
+
   increment = h + 1
   iter_count = 0
   λ = copy(λ₀)
@@ -57,6 +58,7 @@ end
 function gauss_newton_damped(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Real}, y::Vector{<:Real}, h::Real=1e-3, n::Int=200)::Tuple{Vector{<:Real},Real,Int}
   g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
   Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
+
   increment = h + 1
   iter_count = 0
   λ = copy(λ₀)
@@ -66,13 +68,8 @@ function gauss_newton_damped(f::Function, λ₀::Vector{<:Real}, x::Vector{<:Rea
     δ = R \ (.-transpose(Matrix(Q)) * g(λ))
 
     p = 0
-
-    norm_damped = norm(g(λ + (δ / 2^p)))
-    norm_undamped = norm(g(λ))^2 # Todo: g(λ) or gλ = g(λ) ?
-    while norm_damped > norm_undamped
+    while norm(g(λ + (δ / 2^p)))^2 > norm(g(λ))^2
       p += 1
-      norm_damped = norm(g(λ + (δ / 2^p)))
-      norm_undamped = norm(g(λ))^2 # Todo: g(λ) or gλ = g(λ) ?
     end
 
     λ += δ / 2^p
@@ -98,6 +95,8 @@ h = 1e-7
 
 λ, Ẽ, n = gauss_newton(f, λ, x, y, h)
 a, b = λ[1], λ[2]
+
+println("Gauss-Newton")
 printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
 printfmtln("Ẽ = {:.2e}", Ẽ)
 println("in $(n) iterations")
@@ -116,3 +115,28 @@ scatter!(ax, x, y, label="data", color=:orange)
 axislegend(position=:rt)
 
 save("gauss_newton_undamped.png", figure)
+
+println()
+
+λ = [2.0, 2.0]
+
+λ, Ẽ, n = gauss_newton_damped(f, λ, x, y, h)
+a, b = λ[1], λ[2]
+
+println("Gauss-Newton damped")
+printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
+printfmtln("Ẽ = {:.2e}", Ẽ)
+println("in $(n) iterations")
+
+x_line = collect(LinRange(x[1], x[end], 200))
+y_line = [f(x, λ) for x in x_line]
+
+figure = Figure()
+
+ax = Axis(figure[1, 1], title="Gauss-Newton damped example")
+lines!(ax, x_line, y_line, label="fitted function")
+scatter!(ax, x, y, label="data", color=:orange)
+
+axislegend(position=:rt)
+
+save("gauss_newton_damped.png", figure)
