@@ -99,7 +99,7 @@ a, b = λ[1], λ[2]
 println("Gauss-Newton")
 printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
 printfmtln("Ẽ = {:.2e}", Ẽ)
-println("in $(n) iterations")
+println("in $n iterations")
 
 x_line = collect(LinRange(x[1], x[end], 200))
 y_line = [f(x, λ) for x in x_line]
@@ -126,7 +126,7 @@ a, b = λ[1], λ[2]
 println("Gauss-Newton damped")
 printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
 printfmtln("Ẽ = {:.2e}", Ẽ)
-println("in $(n) iterations")
+println("in $n iterations")
 
 x_line = collect(LinRange(x[1], x[end], 200))
 y_line = [f(x, λ) for x in x_line]
