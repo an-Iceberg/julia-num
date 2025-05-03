@@ -1,6 +1,4 @@
-using LinearAlgebra
-
-include("jacobian.jl")
+using ForwardDiff, LinearAlgebra
 
 """
 `f::(Real, Vector{<:Real})::Real` Function, which takes in a scalar `x` and an array of coefficients.
@@ -19,30 +17,31 @@ include("jacobian.jl")
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function gauss_newton(
+function fit(
   f::Function,
-  λ₀::Vector{<:Real},
-  x::Vector{<:Real},
-  y::Vector{<:Real},
+  λ0::Vector{<:Number},
+  x::Vector{<:Number},
+  y::Vector{<:Number},
   h::Real=1e-3,
-  n::Int=200,
-)::Tuple{Vector{<:Real}, Real, Int}
+  n::Int=100,
+)::Tuple{Vector{<:Number}, Real, Int}
+  D = ForwardDiff.jacobian
   g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
   Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
 
-  increment = h + 1
-  iter_count = 0
-  λ = copy(λ₀)
+  inc = h + 1 # Increment
+  iter = 0 # Iteration count
+  λ = copy(λ0)
 
-  while iter_count < n && increment > h
-    Q, R = qr(D1_4(g, λ, h))
+  while iter < n && inc > h
+    Q, R = qr(D(g, λ))
     δ = R \ (.-transpose(Matrix(Q)) * g(λ))
     λ += δ
-    increment = norm(δ)
-    iter_count += 1
+    inc = norm(δ)
+    iter += 1
   end
 
-  return (λ, Ẽ(λ), iter_count)
+  return (λ, Ẽ(λ), iter)
 end
 
 """
@@ -62,95 +61,73 @@ end
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function gauss_newton_damped(
+function fit_damped(
   f::Function,
-  λ₀::Vector{<:Real},
-  x::Vector{<:Real},
-  y::Vector{<:Real},
+  λ₀::Vector{<:Number},
+  x::Vector{<:Number},
+  y::Vector{<:Number},
   h::Real=1e-3,
-  n::Int=200,
-)::Tuple{Vector{<:Real}, Real, Int}
+  n::Int=100,
+)::Tuple{Vector{<:Number}, Real, Int}
+  D = ForwardDiff.jacobian
   g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
   Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
 
-  increment = h + 1
-  iter_count = 0
+  inc = h + 1 # Increment
+  iter = 0 # Iteration count
   λ = copy(λ₀)
 
-  while iter_count < n && increment > h
-    Q, R = qr(D1_4(g, λ, h))
+  while iter < n && inc > h
+    Q, R = qr(D(g, λ))
     δ = R \ (.-transpose(Matrix(Q)) * g(λ))
 
+    # Calculating how strong the damping should be
     p = 0
     while norm(g(λ + (δ / 2^p)))^2 > norm(g(λ))^2
       p += 1
     end
 
     λ += δ / 2^p
-    increment = norm(δ)
-    iter_count += 1
+    inc = norm(δ)
+    iter += 1
   end
 
-  return (λ, Ẽ(λ), iter_count)
+  return (λ, Ẽ(λ), iter)
 end
+
+#=
+println("---------- Testing ----------")
 
 using Format
 
 x = [0, 1, 2, 3, 4]
 y = [3, 1, 0.5, 0.2, 0.05]
 
-function f(x::Real, coefs::Vector{<:Real})::Real
+# Todo: check to see if this works, if x is a Vector{<:Real}
+function f(x, coefs)
   a, b = coefs
-  return a * ℯ^(b * x)
+  return a * exp(b * x)
 end
 
 h = 1e-7
 λ = [1.0, 1.0]
 
-λ, Ẽ, n = gauss_newton(f, λ, x, y, h)
+λ, Ẽ, n = fit(f, λ, x, y, h)
 a, b = λ[1], λ[2]
 
 println("Gauss-Newton")
 printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
 printfmtln("Ẽ = {:.2e}", Ẽ)
 println("in $n iterations")
-
-x_line = collect(LinRange(x[1], x[end], 200))
-y_line = [f(x, λ) for x in x_line]
-
-using CairoMakie
-
-figure = Figure()
-
-ax = Axis(figure[1, 1]; title="Gauss-Newton undamped example")
-lines!(ax, x_line, y_line; label="fitted function")
-scatter!(ax, x, y; label="data", color=:orange)
-
-axislegend(; position=:rt)
-
-save("gauss_newton_undamped.png", figure)
-
 println()
 
 λ = [2.0, 2.0]
 
-λ, Ẽ, n = gauss_newton_damped(f, λ, x, y, h)
+λ, Ẽ, n = fit_damped(f, λ, x, y, h)
 a, b = λ[1], λ[2]
 
 println("Gauss-Newton damped")
 printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
 printfmtln("Ẽ = {:.2e}", Ẽ)
 println("in $n iterations")
-
-x_line = collect(LinRange(x[1], x[end], 200))
-y_line = [f(x, λ) for x in x_line]
-
-figure = Figure()
-
-ax = Axis(figure[1, 1]; title="Gauss-Newton damped example")
-lines!(ax, x_line, y_line; label="fitted function")
-scatter!(ax, x, y; label="data", color=:orange)
-
-axislegend(; position=:rt)
-
-save("gauss_newton_damped.png", figure)
+=#
