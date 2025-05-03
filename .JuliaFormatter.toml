@@ -1,0 +1,15 @@
+indent = 2
+margin = 100
+whitespace_typedefs = true
+whitespace_ops_in_indices = true
+remove_extra_newlines = true
+import_to_using = true
+# always_use_return = true
+whitespace_in_kwargs = false
+normalize_line_endings = "unix"
+join_lines_based_on_source = true
+indent_submodule = true
+separate_kwargs_with_semicolon = true
+surround_whereop_typeparameters = true
+always_for_in = "nothing"
+
