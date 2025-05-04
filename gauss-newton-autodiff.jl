@@ -17,17 +17,10 @@ using ForwardDiff, LinearAlgebra
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function fit(
-  f::Function,
-  λ0::Vector{<:Number},
-  x::Vector{<:Number},
-  y::Vector{<:Number},
-  h::Real=1e-3,
-  n::Int=100,
-)::Tuple{Vector{<:Number}, Real, Int}
+function fit(f::Function, λ0, x, y, h::Real=1e-3, n::Int=100)
   D = ForwardDiff.jacobian
-  g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
-  Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
+  g(λ) = [y - f(x, λ) for (x, y) in zip(x, y)]
+  Ẽ(λ) = norm(g(λ))^2
 
   inc = h + 1 # Increment
   iter = 0 # Iteration count
@@ -61,17 +54,10 @@ end
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function fit_damped(
-  f::Function,
-  λ₀::Vector{<:Number},
-  x::Vector{<:Number},
-  y::Vector{<:Number},
-  h::Real=1e-3,
-  n::Int=100,
-)::Tuple{Vector{<:Number}, Real, Int}
+function fit_damped(f::Function, λ₀, x, y, h::Real=1e-3, n::Integer=100)
   D = ForwardDiff.jacobian
-  g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
-  Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
+  g(λ) = [y - f(x, λ) for (x, y) in zip(x, y)]
+  Ẽ(λ) = norm(g(λ))^2
 
   inc = h + 1 # Increment
   iter = 0 # Iteration count
@@ -96,14 +82,11 @@ function fit_damped(
 end
 
 #=
-println("---------- Testing ----------")
-
-using Format
+using Printf
 
 x = [0, 1, 2, 3, 4]
 y = [3, 1, 0.5, 0.2, 0.05]
 
-# Todo: check to see if this works, if x is a Vector{<:Real}
 function f(x, coefs)
   a, b = coefs
   return a * exp(b * x)
@@ -116,8 +99,8 @@ h = 1e-7
 a, b = λ[1], λ[2]
 
 println("Gauss-Newton")
-printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
-printfmtln("Ẽ = {:.2e}", Ẽ)
+@printf("f(x) = %.2f⋅ℯ^%.2f⋅x\n", a, b)
+@printf("Ẽ = %.2f\n", Ẽ)
 println("in $n iterations")
 println()
 
@@ -127,7 +110,31 @@ println()
 a, b = λ[1], λ[2]
 
 println("Gauss-Newton damped")
-printfmtln("f(x) = {:.2f}⋅ℯ^({:.2f}⋅x)", a, b)
-printfmtln("Ẽ = {:.2e}", Ẽ)
+@printf("f(x) = %.2f⋅ℯ^%.2f⋅x\n", a, b)
+@printf("Ẽ = %.2f\n", Ẽ)
 println("in $n iterations")
+=#
+
+#=
+using Printf
+
+x = [[0, 0], [3, 1], [2, 2], [1, 3], [3, 4]]
+y = [3, 1, 0.5, 0.2, 0.05]
+
+function fn(x, coefs)
+  x, y = x
+  a, b, c = coefs
+  return a * x + b * y + c
+end
+
+a, b, c = 0, 0, 0
+params = [a, b, c]
+
+params, error, iter_count = fit_damped(fn, params, x, y, 1e-7)
+a, b, c = params
+
+prec = 4
+@printf("f(x, y) = %.*fx + %.*fy + %.*f\n", prec, a, prec, b, prec, c)
+@printf("Ẽ = %.2e\n", error)
+println("in $iter_count iterations")
 =#
