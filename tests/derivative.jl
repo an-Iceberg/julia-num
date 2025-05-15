@@ -1,6 +1,7 @@
 include("../derivative.jl")
 
 using Format
+using Printf
 
 println("--------------------- Differentiation (df) ---------------------")
 println()
@@ -46,8 +47,15 @@ function d5(f::Function, x::Real, h::Real=1e-3)::Real
 end
 
 function d6(f::Function, x::Real, h::Real=1e-3)::Real
-  return (13f(x - 5h) - 190f(x - 4h) + 1_305f(x - 3h) - 4_680f(x - 2h) + 9_690f(x - h) - 12_276f(x) + 9_60f(x + h) - 4_680f(x + 2h) + 1_305f(x + 3h) - 190f(x + 4h) + 13f(x + 5h)) / 240h^6
+  return (
+    13f(x - 5h) - 190f(x - 4h) + 1_305f(x - 3h) - 4_680f(x - 2h) + 9_690f(x - h) - 12_276f(x) +
+    9_60f(x + h) - 4_680f(x + 2h) + 1_305f(x + 3h) - 190f(x + 4h) + 13f(x + 5h)
+  ) / 240h^6
 end
 
 printfmtln("d5: {:.2e}", abs(d5f(x) - d5(f, x, 0.1)))
 printfmtln("d6: {:.2e}", abs(d6f(x) - d6(f, x, 0.1)))
+
+println()
+@printf("%.2e\n", abs(d2f(x) - d1_4(x -> d1_4(f, x), x)))
+@printf("%.2e\n", abs(d3f(x) - d1_4(x -> d1_4(x -> d1_4(f, x), x), x)))

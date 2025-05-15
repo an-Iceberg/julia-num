@@ -4,6 +4,9 @@ D = ForwardDiff.jacobian
 ∇ = ForwardDiff.gradient
 d = ForwardDiff.derivative
 
+d2(f, x) = d(x -> d(f, x), x)
+d3(f, x) = d2(x -> d(f, x), x)
+
 f(x) = sin(x) - cos(x)
 
 # display(ForwardDiff.jacobian(f, [2]))
@@ -14,7 +17,9 @@ f(x) = sin(x) - cos(x)
 # println()
 printfmtln("{:.4f}", ForwardDiff.derivative(f, 2))
 printfmtln("{:.4f}", d(f, 2))
+printfmtln("{:.4f}", d2(f, 2))
 printfmtln("{:.4f}", d(x -> d(f, x), 2))
+printfmtln("{:.4f}", d3(f, 2))
 printfmtln("{:.4f}", d(x -> d(x -> d(f, x), x), 2))
 
 x = [-1, 1]
