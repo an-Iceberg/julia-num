@@ -138,3 +138,28 @@ prec = 4
 @printf("Ẽ = %.2e\n", error)
 println("in $iter_count iterations")
 =#
+
+#=
+# Todo: function that returns a vector
+using Printf
+
+x = [[0, 0], [3, 1], [2, 2], [1, 3], [3, 4]]
+y = [3, 1, 0.5, 0.2, 0.05]
+
+function fn(x, coefs)
+  x, y = x
+  a, b, c = coefs
+  return a * x + b * y + c
+end
+
+a, b, c = 0, 0, 0
+params = [a, b, c]
+
+params, error, iter_count = fit_damped(fn, params, x, y, 1e-7)
+a, b, c = params
+
+prec = 4
+@printf("f(x, y) = %.*fx + %.*fy + %.*f\n", prec, a, prec, b, prec, c)
+@printf("Ẽ = %.2e\n", error)
+println("in $iter_count iterations")
+=#
