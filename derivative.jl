@@ -9,7 +9,28 @@
 
 # Rework idea: make use of this: d2(x) = d(x -> d(f, x), x)
 
+function d(f::Function, x, h::Real=0.001)
+  # return ((1 / 12)f(x - 2h) - (2 / 3)f(x - h) + (2 / 3)f(x + h) - (1 / 12)f(x + 2h)) / h
+
+  # Even this implementation seems to be more accurate than the direct formulas?
+  return (-f(x - h) + f(x + h)) / 2h
+end
+
+function d2(f::Function, x, h::Real=0.001)
+  return d(x -> d(f, x, h), x)
+end
+
+# Precision seems to deteriorate after here
+function d3(f::Function, x, h::Real=0.001)
+  return d(x -> d2(f, x, h), x)
+end
+
+function d4(f::Function, x, h::Real=0.001)
+  return d(x -> d3(f, x, h), x)
+end
+
 # d¹
+
 """
 Calculates the 1ˢᵗ order derivative df/dx of `f` at `x` with precision `h` using 2 points.
 """
