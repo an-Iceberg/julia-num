@@ -1,5 +1,21 @@
 include("partial.jl")
 
+function D(f::Function, x⃗::Vector, h::Float64=1e-3)
+  return stack([∂1_2(f, x⃗, i, h) for i in 1:length(x⃗)])
+end
+
+function D2(f::Function, x⃗::Vector, h::Float64=1e-3)
+  return D(x -> D(f, x, h), x⃗, h)
+end
+
+function D3(f::Function, x⃗::Vector, h::Float64=1e-3)
+  return D(x -> D2(f, x, h), x⃗, h)
+end
+
+function D4(f::Function, x⃗::Vector, h::Float64=1e-3)
+  return D(x -> D3(f, x, h), x⃗, h)
+end
+
 # D¹
 
 function D1_2(f::Function, x⃗::Vector{<:Real}, h::Float64=1e-3)::Matrix
