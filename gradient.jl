@@ -2,7 +2,7 @@
 
 function ∇(f::Function, x⃗, h::Real=1e-3)
   h⃗ = fill(h, length(x⃗))
-  return (-0.5f(x⃗ - h⃗) + 0.5f(x⃗ + h⃗)) / h
+  return (f(x⃗ - 2h⃗) - 8f(x⃗ - h⃗) + 8f(x⃗ + h⃗) - f(x⃗ + 2h⃗)) / 12h
 end
 
 function ∇2(f::Function, x⃗, h::Real=1e-3)

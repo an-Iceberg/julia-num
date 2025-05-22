@@ -8,18 +8,16 @@ function ∂(f::Function, x⃗::Vector, i::Int, h::Real=1e-3)
   # This is for performance reasons. Each time we need to evalute f we only modify the relevant
   # vector entry instead of creating another vector.
   x_local = copy(x⃗)
-
-  # Note: further performacne improvement: create local copy of x[i]
+  x_val = x⃗[i]
 
   # Info: this is a closure and captures its environment. That's why it can't be refactored to be
   # placed outside of this function's scope
   function x(h)
-    x_local[i] = x⃗[i]
+    x_local[i] = x_val
     x_local[i] += h
     return x_local
   end
 
-  # return (-0.5f(x(-h)) + 0.5f(x(h))) / h
   return ((1 / 12)f(x(-2h)) - (2 / 3)f(x(-h)) + (2 / 3)f(x(h)) - (1 / 12)f(x(2h))) / h
 end
 
