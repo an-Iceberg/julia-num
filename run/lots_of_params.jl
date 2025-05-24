@@ -5,12 +5,12 @@ include("../src/gauss-newton_fin_diff.jl")
 x = [1, 2, 3, 4, 5]
 y = [1, 1.5, 0.5, 0.75, 1]
 
-function f(x, coefs)
-  a, b, c, d, e, f, g, h, i, j, k, l = coefs
+function f(x, params)
+  p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12 = params
 
   sin_part(a, b, c, d) = a * sin(b * x + c) + d
 
-  return sin_part(a, b, c, d) + sin_part(e, f, g, h) + sin_part(i, j, k, l)
+  return sin_part(p1, p2, p3, p4) + sin_part(p5, p6, p7, p8) + sin_part(p9, p10, p11, p12)
 end
 
 λ = fill(1, 12)
