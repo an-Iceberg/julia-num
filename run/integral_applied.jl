@@ -1,7 +1,7 @@
 using Format
 
-include("derivative.jl")
-include("integral.jl")
+include("../src/derivative.jl")
+include("../src/integral.jl")
 
 begin
   f(x) = cos(x)

@@ -1,5 +1,5 @@
-include("gradient.jl")
-include("jacobian.jl")
+include("src/gradient.jl")
+include("src/jacobian.jl")
 
 f1(x) = x[1] + x[2]^2 - x[3]^2 - 13
 f2(x) = log(x[2] / 4) + exp(0.5x[3] - 1) - 1

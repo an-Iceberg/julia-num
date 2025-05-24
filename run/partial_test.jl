@@ -1,6 +1,7 @@
 using Format
+using Printf
 
-include("partial.jl")
+include("../src/partial.jl")
 
 x, y = -1, 1
 x⃗ = [x, y]
@@ -14,5 +15,5 @@ function g(input)
   return f(x, y)
 end
 
-printfmtln("{:.2e}", abs(∂xf(x, y) - ∂1_4(g, x⃗, 1)))
-printfmtln("{:.2e}", abs(∂yf(x, y) - ∂1_4(g, x⃗, 2)))
+@printf("%.2e\n", abs(∂xf(x, y) - ∂(g, x⃗, 1)))
+@printf("%.2e\n", abs(∂yf(x, y) - ∂(g, x⃗, 2)))
