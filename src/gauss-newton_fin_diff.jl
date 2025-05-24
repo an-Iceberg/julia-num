@@ -19,7 +19,7 @@ include("jacobian.jl")
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function gauss_newton(
+function fit(
   f::Function,
   λ₀::Vector{<:Real},
   x::Vector{<:Real},
@@ -62,7 +62,7 @@ end
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function gauss_newton_damped(
+function fit_damped(
   f::Function,
   λ₀::Vector{<:Real},
   x::Vector{<:Real},
@@ -94,6 +94,7 @@ function gauss_newton_damped(
   return (λ, Ẽ(λ), iter_count)
 end
 
+#=
 using Format
 
 x = [0, 1, 2, 3, 4]
@@ -107,7 +108,7 @@ end
 h = 1e-7
 λ = [1.0, 1.0]
 
-λ, Ẽ, n = gauss_newton(f, λ, x, y, h)
+λ, Ẽ, n = fit(f, λ, x, y, h)
 a, b = λ[1], λ[2]
 
 println("Gauss-Newton")
@@ -134,7 +135,7 @@ println()
 
 λ = [2.0, 2.0]
 
-λ, Ẽ, n = gauss_newton_damped(f, λ, x, y, h)
+λ, Ẽ, n = fit_damped(f, λ, x, y, h)
 a, b = λ[1], λ[2]
 
 println("Gauss-Newton damped")
@@ -154,3 +155,4 @@ scatter!(ax, x, y; label="data", color=:orange)
 axislegend(; position=:rt)
 
 save("gauss_newton_damped.png", figure)
+=#
