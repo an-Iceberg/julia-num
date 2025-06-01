@@ -7,9 +7,9 @@ include("jacobian.jl")
 
 `λ₀` Initial coefficients
 
-`x` x part of datapoints
+`x` x part of data points
 
-`y` y part of datapoints
+`y` y part of data points
 
 `h` Precision
 
@@ -19,16 +19,9 @@ include("jacobian.jl")
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function fit(
-  f::Function,
-  λ₀::Vector{<:Real},
-  x::Vector{<:Real},
-  y::Vector{<:Real},
-  h::Real=1e-3,
-  n::Int=200,
-)::Tuple{Vector{<:Real}, Real, Int}
-  g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
-  Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
+function fit(f::Function, λ₀, x, y, h::Real=1e-3, n::Int=200)
+  g(λ) = [y - f(x, λ) for (x, y) in zip(x, y)]
+  Ẽ(λ) = norm(g(λ))^2
 
   increment = h + 1
   iter_count = 0
@@ -50,9 +43,9 @@ end
 
 `λ₀` Initial coefficients
 
-`x` x part of datapoints
+`x` x part of data points
 
-`y` y part of datapoints
+`y` y part of data points
 
 `h` Precision
 
@@ -62,16 +55,9 @@ end
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function fit_damped(
-  f::Function,
-  λ₀::Vector{<:Real},
-  x::Vector{<:Real},
-  y::Vector{<:Real},
-  h::Real=1e-3,
-  n::Int=200,
-)::Tuple{Vector{<:Real}, Real, Int}
-  g(λ::Vector{<:Real})::Vector{<:Real} = [y - f(x, λ) for (x, y) in zip(x, y)]
-  Ẽ(λ::Vector{<:Real})::Real = norm(g(λ))^2
+function fit_damped(f::Function, λ₀, x, y, h::Real=1e-3, n::Int=200)
+  g(λ) = [y - f(x, λ) for (x, y) in zip(x, y)]
+  Ẽ(λ) = norm(g(λ))^2
 
   increment = h + 1
   iter_count = 0
