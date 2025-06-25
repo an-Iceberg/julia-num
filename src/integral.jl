@@ -6,7 +6,6 @@ Calculates the integral of `f` between `a` and `b` using
 , so using polynomials of 2ⁿᵈ degree.
 """
 function ∫_2(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
-  # Todo: don't ceil and don't ::Int. Do that at the array comprehension
   n = ceil((b - a) / h)
   x(i) = a + (i * h)
 
@@ -27,14 +26,25 @@ Calculates the integral of `f` between `a` and `b` using
 , so using polynomials of 3ʳᵈ degree.
 """
 function ∫_3(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
-  n = ceil((b - a) / h)
+  n = (b - a) / h
   x(i) = a + (i * h)
+
+  n -= n % 3
+
+  last_point = x(n)
+  last_segment = ∫_2(last_point, b, f, h)
+
+  #! format: off
+  return (3/8) * h * sum([f(x(3i-3)) + 3f(x(3i-2)) + 3f(x(3i-1)) + f(x(3i)) for i in 1:(n/3)]) + last_segment
+  #! format: on
+
+  # return (3 / 8) * h * sum([f(x(3i - 3)) + f(x(3i - 2)) + f(x(3i - 1)) + f(x(3i)) for i in 1:(n/3-1)])
 
   # modulus = n % 3
   # if modulus == 1
   #   n -= 1
   # elseif modulus == 2
-  #   n += 1
+  #   n -= 2
   # end
 
   # Note: none of these work 😭
@@ -56,12 +66,6 @@ function ∫_3(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
   #   end
   # end
   # return (3 / 8) * h * Σ
-
-  #! format: off
-  return (3/8) * h * sum([f(x(3i-3)) + 3f(x(3i-2)) + 3f(x(3i-1)) + f(x(3i)) for i in 1:(n/3)])
-  #! format: on
-
-  # return (3 / 8) * h * sum([f(x(3i - 3)) + f(x(3i - 2)) + f(x(3i - 1)) + f(x(3i)) for i in 1:(n/3-1)])
 end
 
 """
@@ -92,24 +96,30 @@ Calculates the integral of `f` between `a` and `b` using
 , so using polynomials of 6ᵗʰ degree.
 """
 function ∫_6(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
-  n = ceil((b - a) / h)
+  n = (b - a) / h
   x(i) = a + (i * h)
 
+  n -= n % 6
+
+  last_point = x(n)
+  last_segment = ∫_2(last_point, b, f, h)
+
   #! format: off
-  return (3/10) * h * sum([f(x(6i-6)) + 5f(x(6i-5)) + f(x(6i-4)) + 6f(x(6i-3)) + f(x(6i-2)) + 5f(x(6i-1)) + f(x(6i)) for i in 1:(n/6)])
+  return (3/10) * h * sum([f(x(6i-6)) + 5f(x(6i-5)) + f(x(6i-4)) + 6f(x(6i-3)) + f(x(6i-2)) + 5f(x(6i-1)) + f(x(6i)) for i in 1:(n/6)]) + last_segment
   #! format: on
 end
 
-#=
-using Printf
+# using Printf
 
-f(x) = cos(x)
-F(x) = sin(x)
-a = 0.0
-b = 5.0
+# f(x) = cos(x)
+# F(x) = sin(x)
+# a = 0.0
+# b = 5.0
+# h = 0.01
 
-@printf("Simpson's 1/3: ε = %.2e\n", abs(∫_2(a, b, f) - (F(b) - F(a))))
-@printf("Simpson's 3/8: ε = %.2e\n", abs(∫_3(a, b, f) - (F(b) - F(a))))
-@printf("Boole's      : ε = %.2e\n", abs(∫_4(a, b, f) - (F(b) - F(a))))
-@printf("Weddle's     : ε = %.2e\n", abs(∫_6(a, b, f) - (F(b) - F(a))))
-=#
+# I() = F(b) - F(a)
+
+# @printf("Simpson's 1/3: ε = %.2e\n", abs(∫_2(a, b, f, h) - I()))
+# @printf("Simpson's 3/8: ε = %.2e\n", abs(∫_3(a, b, f, h) - I()))
+# @printf("Boole's      : ε = %.2e\n", abs(∫_4(a, b, f, h) - I()))
+# @printf("Weddle's     : ε = %.2e\n", abs(∫_6(a, b, f, h) - I()))
