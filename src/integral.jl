@@ -92,7 +92,7 @@ end
 
 """
 Calculates the integral of `f` between `a` and `b` using
-[Weddle's rule]()
+[Weddle's rule](https://mathworld.wolfram.com/WeddlesRule.html)
 , so using polynomials of 6ᵗʰ degree.
 """
 function ∫_6(a::Real, b::Real, f::Function, h::Real=1e-2)::Real
