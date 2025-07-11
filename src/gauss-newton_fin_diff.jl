@@ -3,7 +3,9 @@ using LinearAlgebra
 include("jacobian.jl")
 
 """
-`f::(Real, Vector{<:Real})::Real` Function, which takes in a scalar `x` and an array of coefficients.
+Fits the function `f` to the data points (`x`, `y`) such that the sum of squares is minimized.
+
+`f(x, λ)` Function, which takes in a tensor `x` and an array of coefficients `λ`.
 
 `λ₀` Initial coefficients
 
@@ -19,7 +21,7 @@ include("jacobian.jl")
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function fit(f::Function, λ₀, x, y, h::Real=1e-3, n::Int=200)
+function fit(f::Function, λ₀, x, y, h::Real=1e-3, n::Unsigned=200)
   g(λ) = [y - f(x, λ) for (x, y) in zip(x, y)]
   Ẽ(λ) = norm(g(λ))^2
 
@@ -39,7 +41,9 @@ function fit(f::Function, λ₀, x, y, h::Real=1e-3, n::Int=200)
 end
 
 """
-`f::(Real, Vector{<:Real})::Real` Function, which takes in a scalar `x` and an array of coefficients.
+Fits the function `f` to the data points (`x`, `y`) such that the sum of squares is minimized.
+
+`f(x, λ)` Function, which takes in a tensor `x` and an array of coefficients `λ`.
 
 `λ₀` Initial coefficients
 
@@ -55,7 +59,7 @@ end
 
 (Fitted coefficients, mean square error, \\# of iterations)
 """
-function fit_damped(f::Function, λ₀, x, y, h::Real=1e-3, n::Int=200)
+function fit_damped(f::Function, λ₀, x, y, h::Real=1e-3, n::Unsigned=200)
   g(λ) = [y - f(x, λ) for (x, y) in zip(x, y)]
   Ẽ(λ) = norm(g(λ))^2
 

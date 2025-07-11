@@ -1,7 +1,9 @@
 using ForwardDiff, LinearAlgebra
 
 """
-`f::(Real, Vector{<:Real})::Real` Function, which takes in a scalar `x` and an array of coefficients.
+Fits the function `f` to the data points (`x`, `y`) such that the sum of squares is minimized.
+
+`f(x, λ)` Function, which takes in a tensor `x` and an array of coefficients `λ`.
 
 `λ₀` Initial coefficients
 
@@ -38,7 +40,9 @@ function fit(f::Function, λ0, x, y, h::Real=1e-3, n::Int=100)
 end
 
 """
-`f::(Real, Vector{<:Real})::Real` Function, which takes in a scalar `x` and an array of coefficients.
+Fits the function `f` to the data points (`x`, `y`) such that the sum of squares is minimized.
+
+`f(x, λ)` Function, which takes in a tensor `x` and an array of coefficients `λ`.
 
 `λ₀` Initial coefficients
 
